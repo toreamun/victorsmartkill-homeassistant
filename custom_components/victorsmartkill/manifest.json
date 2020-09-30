@@ -1,0 +1,9 @@
+{
+  "domain": "victorsmartkill",
+  "name": "Victor Smart Kill",
+  "documentation": "https://github.com/toreamun/victorsmartkill-homeassistant",
+  "dependencies": [],
+  "config_flow": true,
+  "codeowners": ["@toreamun"],
+  "requirements": ["httpx"]
+}
