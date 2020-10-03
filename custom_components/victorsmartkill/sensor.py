@@ -1,7 +1,6 @@
 """Sensor platform for victorsmartkill."""
 from typing import List
 
-from attr import attributes
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
     DEVICE_CLASS_BATTERY,
@@ -24,7 +23,7 @@ from custom_components.victorsmartkill.entity import VictorSmartKillEntity
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
-    """Setup sensor platform."""
+    """Set up sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
     devices = []

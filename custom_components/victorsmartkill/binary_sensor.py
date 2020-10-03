@@ -2,7 +2,6 @@
 from typing import List
 
 from homeassistant.components.binary_sensor import BinarySensorDevice
-from homeassistant.helpers.entity import dt_util
 
 from custom_components.victorsmartkill.const import (
     ATTR_LAST_KILL_DATE,
@@ -13,7 +12,7 @@ from custom_components.victorsmartkill.entity import VictorSmartKillEntity
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
-    """Setup binary_sensor platform."""
+    """Set up binary_sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     devices = [
         VictorSmartKillBinarySensor(trap.id, coordinator) for trap in coordinator.data

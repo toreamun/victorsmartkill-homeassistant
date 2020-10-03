@@ -2,9 +2,11 @@
 from abc import ABC, abstractproperty
 from typing import List
 
-from attr import s
 from homeassistant.const import ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.helpers.update_coordinator import (
+    CoordinatorEntity,
+    DataUpdateCoordinator,
+)
 from homeassistant.util import dt
 
 from custom_components.victorsmartkill.const import (
@@ -13,12 +15,8 @@ from custom_components.victorsmartkill.const import (
     ATTR_SSID,
     DOMAIN,
     MANUFACTURER,
-    NAME,
-    VERSION,
 )
 from custom_components.victorsmartkill.victor_smart_kill import Trap
-
-from . import VictorSmartKillDataUpdateCoordinator
 
 
 class VictorSmartKillEntity(CoordinatorEntity, ABC):
@@ -27,15 +25,15 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
     def __init__(
         self,
         trap_id: int,
-        coordinator: VictorSmartKillDataUpdateCoordinator,
+        coordinator: DataUpdateCoordinator[List[Trap]],
     ):
         """Initialize VictorSmartKillEntity."""
         super().__init__(coordinator)
 
-        trap = next(t for t in self.coordinator.data if t.id == trap_id)
+        trap = next(t for t in coordinator.data if t.id == trap_id)
         if not trap:
             raise ValueError(
-                f"Trap with id {trap_id} not found in list {[t.id for t in self.coordinator.data.traps]} of traps."
+                f"Trap with id {trap_id} not found in list {[t.id for t in coordinator.data]} of traps."
             )
         self.trap: Trap = trap
 
