@@ -1,7 +1,6 @@
 """Adds config flow for Victor Smart Kill."""
 from homeassistant import config_entries
 from homeassistant.core import callback
-from sampleclient.client import Client
 import voluptuous as vol
 
 from custom_components.victorsmartkill.const import (  # pylint: disable=unused-import
@@ -10,6 +9,7 @@ from custom_components.victorsmartkill.const import (  # pylint: disable=unused-
     DOMAIN,
     PLATFORMS,
 )
+from custom_components.victorsmartkill.victor_smart_kill import VictorAsyncClient
 
 
 class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -65,8 +65,8 @@ class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     async def _test_credentials(self, username, password):
         """Return true if credentials is valid."""
         try:
-            client = Client(username, password)
-            await client.async_get_data()
+            async with VictorAsyncClient(username, password) as client:
+                await client.fetch_token()
             return True
         except Exception:  # pylint: disable=broad-except
             pass

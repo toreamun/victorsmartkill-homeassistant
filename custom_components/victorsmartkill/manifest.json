@@ -2,8 +2,16 @@
   "domain": "victorsmartkill",
   "name": "Victor Smart Kill",
   "documentation": "https://github.com/toreamun/victorsmartkill-homeassistant",
+  "issue_tracker": "https://github.com/toreamun/victorsmartkill-homeassistant/issues",
   "dependencies": [],
   "config_flow": true,
-  "codeowners": ["@toreamun"],
-  "requirements": ["httpx"]
+  "codeowners": [
+    "@toreamun"
+  ],
+  "requirements": [
+    "httpx==0.15",
+    "marshmallow==3.8",
+    "marshmallow-dataclass==8.0",
+    "typeguard==2.9"
+  ]
 }
