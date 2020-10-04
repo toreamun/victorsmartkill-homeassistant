@@ -1,5 +1,5 @@
 """Victor Smart Kill API module."""
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime
 import logging
 from typing import Any, Dict, List, Optional, Tuple, Union
@@ -105,10 +105,10 @@ class VictorAsyncClient(AsyncClient):
 
 
 @dataclass
-class Activity:
+class Activity:  # pylint: disable=too-many-instance-attributes
     """Activity data class."""
 
-    id: int
+    id: int  # pylint: disable=invalid-name
     url: str
     trap: str
     trap_name: str
@@ -126,13 +126,15 @@ class Activity:
     board_type: str
     error_code: int
     active: bool
-    isRatKill: bool
-    sexKillDetail: Optional[Any]
-    ageKillDetail: Optional[Any]
-    speciesKillDetail: Optional[Any]
-    replacedAttractant: bool
-    replacedBattery: bool
-    cleanedTrap: bool
+    is_rat_kill: bool = field(metadata={"data_key": "isRatKill"})
+    sex_kill_detail: Optional[Any] = field(metadata={"data_key": "sexKillDetail"})
+    age_kill_detail: Optional[Any] = field(metadata={"data_key": "ageKillDetail"})
+    species_kill_detail: Optional[Any] = field(
+        metadata={"data_key": "speciesKillDetail"}
+    )
+    replaced_attractant: bool = field(metadata={"data_key": "replacedAttractant"})
+    replaced_battery: bool = field(metadata={"data_key": "replacedBattery"})
+    cleaned_trap: bool = field(metadata={"data_key": "cleanedTrap"})
     note: Optional[Any]
     site_id: Optional[Any]
     building_id: Optional[Any]
@@ -141,9 +143,14 @@ class Activity:
     floor_plan_y: Optional[Any]
     trap_type_text: str
 
+    @property
+    def temperature_celcius(self) -> float:
+        """Get temperature in celcius."""
+        return round(self.temperature / 20, 1)
+
 
 @dataclass
-class MobileApp:
+class MobileApp:  # pylint: disable=too-many-instance-attributes
     """Mobile app data class."""
 
     url: str
@@ -158,10 +165,10 @@ class MobileApp:
 
 
 @dataclass
-class Profile:
+class Profile:  # pylint: disable=too-many-instance-attributes
     """Profile data class."""
 
-    id: int
+    id: int  # pylint: disable=invalid-name
     url: str
     user: str
     name: Optional[str]
@@ -170,9 +177,9 @@ class Profile:
     client: Optional[str]
     client_name: Optional[str]
     telephone_number: str
-    phoneNames: Optional[Any]
-    phoneNumbers: Optional[Any]
-    emailAddresses: Optional[Any]
+    phone_names: Optional[Any] = field(metadata={"data_key": "phoneNames"})
+    phone_numbers: Optional[Any] = field(metadata={"data_key": "phoneNumbers"})
+    email_addresses: Optional[Any] = field(metadata={"data_key": "emailAddresses"})
     email_notifications_enabled: bool
     notifications_enabled: bool
     terms_version: int
@@ -182,23 +189,23 @@ class Profile:
     notify_new_products: bool
     text_notifications_enabled: bool
     notify_empty_trap: bool
-    fcmTokens: Optional[Any]
-    apnsTokens: Optional[Any]
-    fcmARNs: Optional[Any]
-    apnsARNs: Optional[Any]
-    fcmTokensPro: Optional[Any]
-    apnsTokensPro: Optional[Any]
-    fcmARNsPro: Optional[Any]
-    apnsARNsPro: Optional[Any]
+    fcm_tokens: Optional[Any] = field(metadata={"data_key": "fcmTokens"})
+    apns_tokens: Optional[Any] = field(metadata={"data_key": "apnsTokens"})
+    fcm_arns: Optional[Any] = field(metadata={"data_key": "fcmARNs"})
+    apns_arns: Optional[Any] = field(metadata={"data_key": "apnsARNs"})
+    fcm_tokens_pro: Optional[Any] = field(metadata={"data_key": "fcmTokensPro"})
+    apns_tokens_pro: Optional[Any] = field(metadata={"data_key": "apnsTokensPro"})
+    fcm_arns_pro: Optional[Any] = field(metadata={"data_key": "fcmARNsPro"})
+    apns_arns_pro: Optional[Any] = field(metadata={"data_key": "apnsARNsPro"})
     favorite_sites: Optional[Any]
     notify_false_trigger: bool
 
 
 @dataclass
-class User:
+class User:  # pylint: disable=too-many-instance-attributes
     """User data class."""
 
-    id: int
+    id: int  # pylint: disable=invalid-name
     url: str
     username: str
     password: str
@@ -216,7 +223,7 @@ class User:
 class TermsAndConditions:
     """Terms- and condtions data class."""
 
-    id: int
+    id: int  # pylint: disable=invalid-name
     operator_id: int
     time_stamp: datetime
     terms_and_conditions: str
@@ -224,10 +231,10 @@ class TermsAndConditions:
 
 
 @dataclass
-class Operator:
+class Operator:  # pylint: disable=too-many-instance-attributes
     """Operator data class."""
 
-    id: int
+    id: int  # pylint: disable=invalid-name
     url: str
     account_number: str
     name: str
@@ -243,10 +250,10 @@ class Operator:
 
 
 @dataclass
-class TrapStatistics:
+class TrapStatistics:  # pylint: disable=too-many-instance-attributes
     """Trap statistics data class."""
 
-    id: int
+    id: int  # pylint: disable=invalid-name
     url: str
     trap: str
     trap_name: str
@@ -272,12 +279,17 @@ class TrapStatistics:
     board_type: str
     last_maintenance_date: Union[str, datetime]
 
+    @property
+    def temperature_celcius(self) -> float:
+        """Get temperature in celcius."""
+        return round(self.temperature / 20, 1)
+
 
 @dataclass
-class Trap:
+class Trap:  # pylint: disable=too-many-instance-attributes
     """Trap data class."""
 
-    id: int
+    id: int  # pylint: disable=invalid-name
     url: str
     corruption_status: int
     corruption_status_options: Optional[List[Tuple[int, str]]]
@@ -289,8 +301,8 @@ class Trap:
     auto_upgrade: bool
     status: int
     location: str
-    lat: str
-    long: str
+    lat: float
+    long: float
     upgrade_firmware: Optional[str]
     commercial_gateway: Optional[str]
     commercial_monitor_mode_enabled: bool
