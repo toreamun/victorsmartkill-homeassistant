@@ -25,7 +25,7 @@ class VictorAsyncClient(AsyncClient):
         :param username: Password used to access Victor API.
         :param kwargs: Arguments to pass to the httpx.AsyncClient constructor.
         """
-        super(VictorAsyncClient, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         if not username:
             raise ValueError("User name is required.")
@@ -48,7 +48,7 @@ class VictorAsyncClient(AsyncClient):
         """Fetch token and store in client."""
         self._token = None
 
-        response = await super(VictorAsyncClient, self).request(
+        response = await super().request(
             "POST",
             "api-token-auth/",
             json=self._credentials,
@@ -63,11 +63,13 @@ class VictorAsyncClient(AsyncClient):
         else:
             raise Exception("Unexpected response from token endpoind")
 
-    async def request(self, method, url, data=None, headers=None, **kwargs) -> Response:
+    async def request(
+        self,
+        *args,
+        **kwargs,
+    ) -> Response:
         """Intercept all requests and add token. Fetches token if needed."""
-        return await self._request(
-            True, method, url, data=data, headers=headers, **kwargs
-        )
+        return await self._request(True, *args, **kwargs)
 
     async def _request(
         self, retry_unauthorized, method, url, data=None, headers=None, **kwargs
@@ -88,7 +90,7 @@ class VictorAsyncClient(AsyncClient):
         log.debug("Supplying headers %s and data %s", request_headers, data)
         log.debug("Passing through key word arguments %s.", kwargs)
 
-        response = await super(VictorAsyncClient, self).request(
+        response = await super().request(
             method, url, headers=request_headers, data=data, **kwargs
         )
 

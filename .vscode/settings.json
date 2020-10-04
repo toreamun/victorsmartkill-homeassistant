@@ -3,5 +3,9 @@
         "editor.codeActionsOnSave": {
             "source.organizeImports": true
         }
-    }
+    },
+    "python.linting.pylintArgs": [
+        "--init-hook",
+        "import sys; sys.path.append(\"/workspaces/victorsmartkill-homeassistant\")"
+    ]
 }

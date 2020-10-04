@@ -33,7 +33,10 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         trap = next(t for t in coordinator.data if t.id == trap_id)
         if not trap:
             raise ValueError(
-                f"Trap with id {trap_id} not found in list {[t.id for t in coordinator.data]} of traps."
+                (
+                    f"Trap with id {trap_id} not found in list "
+                    f"{[t.id for t in coordinator.data]} of traps."
+                )
             )
         self.trap: Trap = trap
 
@@ -53,7 +56,8 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
     @property
     def unique_id(self):
         """Return a unique ID to use for this entity."""
-        # See requirements: https://developers.home-assistant.io/docs/entity_registry_index#unique-id-requirements
+        # See requirements:
+        # https://developers.home-assistant.io/docs/entity_registry_index#unique-id-requirements
         return f"{DOMAIN}_{self.trap.id}_{self._unique_id_suffix}"
 
     @property

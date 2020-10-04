@@ -26,10 +26,6 @@ class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle a flow initialized by the user."""
         self._errors = {}
 
-        # Uncomment the next 2 lines if only a single instance of the integration is allowed:
-        # if self._async_current_entries():
-        #     return self.async_abort(reason="single_instance_allowed")
-
         if user_input is not None:
             valid = await self._test_credentials(
                 user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
@@ -38,9 +34,8 @@ class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME], data=user_input
                 )
-            else:
-                self._errors["base"] = "auth"
 
+            self._errors["base"] = "auth"
             return await self._show_config_form(user_input)
 
         return await self._show_config_form(user_input)

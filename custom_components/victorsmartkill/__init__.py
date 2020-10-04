@@ -36,6 +36,7 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup(hass: HomeAssistant, config: Config):
     """Set up this integration using YAML is not supported."""
+    # pylint: disable=unused-argument
     return True
 
 
@@ -134,7 +135,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
                     )
             return traps
         except Exception as exception:
-            raise UpdateFailed(exception)
+            raise UpdateFailed(exception) from exception
 
     async def _get_traps(self) -> List[Trap]:
         """Get list of traps from API."""
