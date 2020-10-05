@@ -190,7 +190,7 @@ class TemperatureSensor(VictorSmartKillEntity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        return self.trap.trapstatistics.temperature
+        return self.trap.trapstatistics.temperature_celcius
 
     @property
     def unit_of_measurement(self):
