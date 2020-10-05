@@ -14,6 +14,7 @@ from homeassistant.core import Config, HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.typing import EventType
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from victor_smart_kill import Trap, VictorApi, VictorAsyncClient
 
 from custom_components.victorsmartkill.const import (
     CONF_PASSWORD,
@@ -22,11 +23,6 @@ from custom_components.victorsmartkill.const import (
     EVENT_TRAP_LIST_CHANGED,
     PLATFORMS,
     STARTUP_MESSAGE,
-)
-from custom_components.victorsmartkill.victor_smart_kill import (
-    Trap,
-    VictorApi,
-    VictorAsyncClient,
 )
 
 SCAN_INTERVAL = timedelta(seconds=30)

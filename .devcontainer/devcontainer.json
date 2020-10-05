@@ -12,6 +12,7 @@
 	],
 	"extensions": [
 		"ms-python.python",
+		"ms-python.vscode-pylance",
 		"github.vscode-pull-request-github",
 	],
 	"settings": {
@@ -21,10 +22,15 @@
 		"python.pythonPath": "/usr/bin/python3",
 		"python.linting.pylintEnabled": true,
 		"python.linting.enabled": true,
+		"python.linting.flake8Enabled": true,
+		"python.linting.mypyEnabled": true,
 		"python.formatting.provider": "black",
 		"editor.formatOnPaste": false,
 		"editor.formatOnSave": true,
 		"editor.formatOnType": true,
 		"files.trimTrailingWhitespace": true
+	},
+	"remoteEnv": {
+		"PATH": "${containerEnv:PATH}:${localEnv:HOME}.local/bin/",
 	}
 }

@@ -8,6 +8,7 @@ from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
 )
 from homeassistant.util import dt
+from victor_smart_kill import Trap
 
 from custom_components.victorsmartkill.const import (
     ATTR_LAST_KILL_DATE,
@@ -16,7 +17,6 @@ from custom_components.victorsmartkill.const import (
     DOMAIN,
     MANUFACTURER,
 )
-from custom_components.victorsmartkill.victor_smart_kill import Trap
 
 
 class VictorSmartKillEntity(CoordinatorEntity, ABC):

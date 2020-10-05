@@ -9,9 +9,6 @@
     "@toreamun"
   ],
   "requirements": [
-    "httpx==0.15",
-    "marshmallow==3.8",
-    "marshmallow-dataclass==8.0",
-    "typeguard==2.9"
+    "victor-smart-kill==0.0.1"
   ]
 }

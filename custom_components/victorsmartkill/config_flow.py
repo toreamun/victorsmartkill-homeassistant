@@ -1,6 +1,7 @@
 """Adds config flow for Victor Smart Kill."""
 from homeassistant import config_entries
 from homeassistant.core import callback
+from victor_smart_kill import VictorAsyncClient
 import voluptuous as vol
 
 from custom_components.victorsmartkill.const import (  # pylint: disable=unused-import
@@ -9,7 +10,6 @@ from custom_components.victorsmartkill.const import (  # pylint: disable=unused-
     DOMAIN,
     PLATFORMS,
 )
-from custom_components.victorsmartkill.victor_smart_kill import VictorAsyncClient
 
 
 class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
@@ -31,6 +31,9 @@ class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
             )
             if valid:
+                await self.async_set_unique_id(user_input[CONF_USERNAME])
+                self._abort_if_unique_id_configured()
+
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME], data=user_input
                 )
