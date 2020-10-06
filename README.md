@@ -2,6 +2,8 @@
 
 Home Assistant integration for Victor Smart-Kill WI-FI electronic mouse and rat traps from [VictorPest.com].
 
+![Victor logo][victor-logo]
+
 [![GitHub Release][releases-shield]][releases]
 [![License][license-shield]](LICENSE)
 
@@ -37,3 +39,4 @@ The easiest way to add this to your Homeassistant installation is using [HACS]. 
 [releases]: https://github.com/toreamun/victorsmartkill-homeassistant/releases
 [hacs]: https://github.com/custom-components/hacs
 [exampleimg]: example.png
+[victor-logo]: https://static.victorpest.com/skin/frontend/rwd/vpus/images/vpus-logo.jpg
