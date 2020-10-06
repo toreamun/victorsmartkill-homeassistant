@@ -20,7 +20,7 @@ from custom_components.victorsmartkill.const import (
 
 
 class VictorSmartKillEntity(CoordinatorEntity, ABC):
-    """Victor Smart Kill entity abstract base class."""
+    """Victor Smart-Kill entity abstract base class."""
 
     def __init__(
         self,

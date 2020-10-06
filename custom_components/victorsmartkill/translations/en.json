@@ -1,9 +1,9 @@
 {
   "config": {
-    "title": "Victor Smart Kill",
+    "title": "Victor Smart-Kill",
     "step": {
       "user": {
-        "title": "Victor Smart Kill",
+        "title": "Victor Smart-Kill",
         "description": "If you need help with the configuration have a look here: https://github.com/toreamun/victorsmartkill-homeassistant",
         "data": {
           "username": "Username",
@@ -15,7 +15,7 @@
       "auth": "Username/Password is wrong."
     },
     "abort": {
-      "single_instance_allowed": "Only a single configuration of Victor Smart Kill is allowed."
+      "single_instance_allowed": "Only a single configuration of Victor Smart-Kill is allowed."
     }
   },
   "options": {

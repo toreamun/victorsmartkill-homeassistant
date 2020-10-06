@@ -1,4 +1,4 @@
-"""Binary sensor platform for Victor Smart Kill."""
+"""Binary sensor platform for Victor Smart-Kill."""
 from typing import List
 
 from homeassistant.components.binary_sensor import BinarySensorDevice
@@ -21,7 +21,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
 
 
 class VictorSmartKillBinarySensor(VictorSmartKillEntity, BinarySensorDevice):
-    """Victor Smart Kill occupancy binary sensor class."""
+    """Victor Smart-Kill occupancy binary sensor class."""
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:

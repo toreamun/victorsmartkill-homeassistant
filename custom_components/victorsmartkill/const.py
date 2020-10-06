@@ -1,7 +1,7 @@
 """Constants for victorsmartkill."""
 # Base component constants
 MANUFACTURER = "VictorPest.com"
-NAME = "Victor Smart Kill"
+NAME = "Victor Smart-Kill"
 DOMAIN = "victorsmartkill"
 DOMAIN_DATA = f"{DOMAIN}_data"
 

@@ -107,7 +107,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
         await self._client.aclose()
 
     async def async_update_data(self):
-        """Update data via Victor Smart Kill API."""
+        """Update data via Victor Smart-Kill API."""
         try:
             if not self.data:
                 traps = await self._get_traps()
@@ -137,7 +137,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
         """Get list of traps from API."""
         traps = await self._api.get_traps()
         logging.debug(
-            "Received traps %s from Victor Smart Kill API",
+            "Received traps %s from Victor Smart-Kill API",
             sorted([trap.id for trap in traps]),
         )
         return traps

@@ -1,4 +1,4 @@
-"""Adds config flow for Victor Smart Kill."""
+"""Adds config flow for Victor Smart-Kill."""
 from homeassistant import config_entries
 from homeassistant.core import callback
 from victor_smart_kill import VictorAsyncClient
@@ -13,7 +13,7 @@ from custom_components.victorsmartkill.const import (  # pylint: disable=unused-
 
 
 class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
-    """Config flow for Victor Smart Kill."""
+    """Config flow for Victor Smart-Kill."""
 
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
@@ -71,7 +71,7 @@ class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
 
 class VictorSmartKillOptionsFlowHandler(config_entries.OptionsFlow):
-    """Victor Smart Kill config flow options handler."""
+    """Victor Smart-Kill config flow options handler."""
 
     def __init__(self, config_entry):
         """Initialize HACS options flow."""

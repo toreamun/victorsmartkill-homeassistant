@@ -1,9 +1,9 @@
 {
   "config": {
-    "title": "Victor Smart Kill",
+    "title": "Victor Smart-Kill",
     "step": {
       "user": {
-        "title": "Victor Smart Kill",
+        "title": "Victor Smart-Kill",
         "description": "Hvis du trenger hjep til konfigurasjon ta en titt her: https://github.com/toreamun/victorsmartkill-homeassistant",
         "data": {
           "username": "Brukernavn",
@@ -15,7 +15,7 @@
       "auth": "Brukernavn/Passord er feil."
     },
     "abort": {
-      "single_instance_allowed": "Du kan konfigurere Victor Smart Kill kun en gang."
+      "single_instance_allowed": "Du kan konfigurere Victor Smart-Kill kun en gang."
     }
   },
   "options": {
