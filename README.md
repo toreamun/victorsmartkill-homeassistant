@@ -32,7 +32,7 @@ The easiest way to add this to your Homeassistant installation is using [HACS]. 
 [victorpest.com]: https://www.victorpest.com/
 [buymecoffee]: https://www.buymeacoffee.com/toreamun
 [buymecoffeebadge]: https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg
-[hacsbadge]: https://img.shields.io/badge/HACS-Custom-orange.svg
+[hacsbadge]: https://img.shields.io/badge/HACS-Default-orange.svg
 [license-shield]: https://img.shields.io/github/license/toreamun/victor-smart-kill
 [maintenance-shield]: https://img.shields.io/badge/maintainer-Tore%20Amundsen%20%40toreamun-blue.svg
 [releases-shield]: https://img.shields.io/github/release/toreamun/victorsmartkill-homeassistant
