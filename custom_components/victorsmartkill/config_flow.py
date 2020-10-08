@@ -1,6 +1,7 @@
 """Adds config flow for Victor Smart-Kill."""
 from homeassistant import config_entries
 from homeassistant.core import callback
+from httpx import HTTPStatusError
 from victor_smart_kill import VictorAsyncClient
 import voluptuous as vol
 
@@ -64,10 +65,11 @@ class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         try:
             async with VictorAsyncClient(username, password) as client:
                 await client.fetch_token()
-            return True
-        except Exception:  # pylint: disable=broad-except
-            pass
-        return False
+        except HTTPStatusError as ex:
+            if ex.response.status_code == 400 or ex.response.status_code == 401:
+                return False
+            raise
+        return True
 
 
 class VictorSmartKillOptionsFlowHandler(config_entries.OptionsFlow):
