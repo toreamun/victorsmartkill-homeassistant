@@ -15,7 +15,7 @@
       "auth": "Username/Password is wrong."
     },
     "abort": {
-      "single_instance_allowed": "Only a single configuration of Victor Smart-Kill is allowed."
+      "already_configured": "Account is already configured."
     }
   },
   "options": {

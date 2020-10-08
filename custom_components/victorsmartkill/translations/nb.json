@@ -15,7 +15,7 @@
       "auth": "Brukernavn/Passord er feil."
     },
     "abort": {
-      "single_instance_allowed": "Du kan konfigurere Victor Smart-Kill kun en gang."
+      "already_configured": "Konto er allerede konfigurert."
     }
   },
   "options": {
