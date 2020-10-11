@@ -1,5 +1,12 @@
 """Adds config flow for Victor Smart-Kill."""
-from homeassistant import config_entries
+from typing import Any, Dict, Optional
+
+from homeassistant.config_entries import (
+    CONN_CLASS_CLOUD_POLL,
+    ConfigEntry,
+    ConfigFlow,
+    OptionsFlow,
+)
 from homeassistant.core import callback
 from httpx import HTTPStatusError
 from victor_smart_kill import VictorAsyncClient
@@ -13,18 +20,20 @@ from custom_components.victorsmartkill.const import (  # pylint: disable=unused-
 )
 
 
-class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
+class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
     """Config flow for Victor Smart-Kill."""
 
     VERSION = 1
-    CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
+    CONNECTION_CLASS = CONN_CLASS_CLOUD_POLL
 
     def __init__(self):
         """Initialize."""
         self._errors = {}
 
-    async def async_step_user(self, user_input=None):
-        """Handle a flow initialized by the user."""
+    async def async_step_user(
+        self, user_input: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """Handle a flow initiated by the user."""
         self._errors = {}
 
         if user_input is not None:
@@ -46,7 +55,7 @@ class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry):
+    def async_get_options_flow(config_entry: ConfigEntry) -> "OptionsFlow":
         """Get the options flow for this handler."""
         return VictorSmartKillOptionsFlowHandler(config_entry)
 
@@ -72,7 +81,7 @@ class VictorSmartKillFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         return True
 
 
-class VictorSmartKillOptionsFlowHandler(config_entries.OptionsFlow):
+class VictorSmartKillOptionsFlowHandler(OptionsFlow):
     """Victor Smart-Kill config flow options handler."""
 
     def __init__(self, config_entry):

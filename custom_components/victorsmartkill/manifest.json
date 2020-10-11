@@ -5,6 +5,10 @@
   "issue_tracker": "https://github.com/toreamun/victorsmartkill-homeassistant/issues",
   "dependencies": [],
   "config_flow": true,
-  "codeowners": ["@toreamun"],
-  "requirements": ["victor-smart-kill==0.0.4"]
+  "codeowners": [
+    "@toreamun"
+  ],
+  "requirements": [
+    "victor-smart-kill==0.0.5"
+  ]
 }

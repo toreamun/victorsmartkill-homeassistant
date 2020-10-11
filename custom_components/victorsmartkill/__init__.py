@@ -10,9 +10,9 @@ import logging
 from typing import List
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import Config, HomeAssistant, callback
+from homeassistant.core import Config, callback
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers.typing import EventType
+from homeassistant.helpers.typing import EventType, HomeAssistantType
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from victor_smart_kill import Trap, VictorApi, VictorAsyncClient
 
@@ -30,13 +30,13 @@ SCAN_INTERVAL = timedelta(minutes=10)
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup(hass: HomeAssistant, config: Config):
+async def async_setup(hass: HomeAssistantType, config: Config) -> bool:
     """Set up this integration using YAML is not supported."""
     # pylint: disable=unused-argument
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     if hass.data.get(DOMAIN) is None:
         hass.data.setdefault(DOMAIN, {})
@@ -84,7 +84,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
 
     def __init__(
         self,
-        hass: HomeAssistant,
+        hass: HomeAssistantType,
         username: str,
         password: str,
     ) -> None:
@@ -102,11 +102,11 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
             update_interval=SCAN_INTERVAL,
         )
 
-    async def async_close(self):
+    async def async_close(self) -> None:
         """Close resources."""
         await self._client.aclose()
 
-    async def async_update_data(self):
+    async def async_update_data(self) -> List[Trap]:
         """Update data via Victor Smart-Kill API."""
         try:
             if not self.data:
@@ -143,7 +143,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
         return traps
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry):
     """Handle removal of an entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     unloaded = all(
@@ -163,7 +163,7 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     return unloaded
 
 
-async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_reload_entry(hass: HomeAssistantType, entry: ConfigEntry):
     """Reload entry."""
     await async_unload_entry(hass, entry)
     await async_setup_entry(hass, entry)

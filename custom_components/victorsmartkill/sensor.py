@@ -1,6 +1,7 @@
 """Sensor platform for victorsmartkill."""
-from typing import List
+from typing import Callable, Iterable, List
 
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
     DEVICE_CLASS_BATTERY,
@@ -10,6 +11,8 @@ from homeassistant.const import (
     PERCENTAGE,
     TEMP_CELSIUS,
 )
+from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import dt
 
 from custom_components.victorsmartkill.const import (
@@ -22,13 +25,17 @@ from custom_components.victorsmartkill.const import (
 from custom_components.victorsmartkill.entity import VictorSmartKillEntity
 
 
-async def async_setup_entry(hass, entry, async_add_devices):
+async def async_setup_entry(
+    hass: HomeAssistantType,
+    entry: ConfigEntry,
+    async_add_entities: Callable[[Iterable[Entity], bool], None],
+):
     """Set up sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
-    devices = []
+    entities = []
     for trap in coordinator.data:
-        devices.extend(
+        entities.extend(
             [
                 KillsPresentSensor(trap.id, coordinator),
                 TotalKillsSensor(trap.id, coordinator),
@@ -42,7 +49,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
             ]
         )
 
-    async_add_devices(devices)
+    async_add_entities(entities, False)
 
 
 class KillsPresentSensor(VictorSmartKillEntity):
