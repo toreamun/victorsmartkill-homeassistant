@@ -1,5 +1,5 @@
 """Binary sensor platform for Victor Smart-Kill."""
-from typing import Callable, Iterable, List
+from typing import Callable, Iterable, List, Optional
 
 from homeassistant.components.binary_sensor import BinarySensorDevice
 from homeassistant.config_entries import ConfigEntry
@@ -17,8 +17,8 @@ from custom_components.victorsmartkill.entity import VictorSmartKillEntity
 async def async_setup_entry(
     hass: HomeAssistantType,
     entry: ConfigEntry,
-    async_add_entities: Callable[[Iterable[Entity], bool], None],
-):
+    async_add_entities: Callable[[Iterable[Entity], Optional[bool]], None],
+) -> None:
     """Set up binary_sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     entities = [
@@ -43,16 +43,16 @@ class VictorSmartKillBinarySensor(VictorSmartKillEntity, BinarySensorDevice):
         return "capture"
 
     @property
-    def device_class(self):
+    def device_class(self) -> str:
         """Return the class of this binary_sensor."""
         return "occupancy"
 
     @property
-    def is_on(self):
+    def is_on(self) -> bool:
         """Return true if the binary_sensor is on."""
         return self.trap.trapstatistics.kills_present > 0
 
     @property
-    def icon(self):
+    def icon(self) -> str:
         """Return the icon of the sensor."""
         return ICON_CAPTURED

@@ -1,5 +1,5 @@
 """Sensor platform for victorsmartkill."""
-from typing import Callable, Iterable, List
+from typing import Callable, Iterable, List, Optional
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -28,8 +28,8 @@ from custom_components.victorsmartkill.entity import VictorSmartKillEntity
 async def async_setup_entry(
     hass: HomeAssistantType,
     entry: ConfigEntry,
-    async_add_entities: Callable[[Iterable[Entity], bool], None],
-):
+    async_add_entities: Callable[[Iterable[Entity], Optional[bool]], None],
+) -> None:
     """Set up sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
 
@@ -64,12 +64,12 @@ class KillsPresentSensor(VictorSmartKillEntity):
         return "kills_present"
 
     @property
-    def state(self):
+    def state(self) -> int:
         """Return the state of the sensor as present kills."""
         return self.trap.trapstatistics.kills_present
 
     @property
-    def icon(self):
+    def icon(self) -> str:
         """Return the icon of the sensor."""
         return ICON_COUNTER
 
@@ -86,12 +86,12 @@ class TotalKillsSensor(VictorSmartKillEntity):
         return "total_kills"
 
     @property
-    def state(self):
+    def state(self) -> Optional[int]:
         """Return the state of the sensor as total kills."""
         return self.trap.trapstatistics.total_kills
 
     @property
-    def icon(self):
+    def icon(self) -> str:
         """Return the icon of the sensor."""
         return ICON_COUNTER
 
@@ -112,12 +112,12 @@ class TotalEscapesSensor(VictorSmartKillEntity):
         return "total_escapes"
 
     @property
-    def state(self):
+    def state(self) -> Optional[int]:
         """Return the state of the sensor as total escapes."""
         return self.trap.trapstatistics.total_escapes
 
     @property
-    def icon(self):
+    def icon(self) -> str:
         """Return the icon of the sensor."""
         return ICON_COUNTER
 
@@ -138,12 +138,12 @@ class TotalRetreatsSensor(VictorSmartKillEntity):
         return "total_retreats"
 
     @property
-    def state(self):
+    def state(self) -> Optional[int]:
         """Return the state of the sensor as total retreats."""
         return self.trap.trapstatistics.total_retreats
 
     @property
-    def icon(self):
+    def icon(self) -> str:
         """Return the icon of the sensor."""
         return ICON_COUNTER
 
@@ -164,17 +164,17 @@ class WirelessNetworkRssiSensor(VictorSmartKillEntity):
         return "wireless_network_rssi"
 
     @property
-    def state(self):
+    def state(self) -> int:
         """Return the state of the sensor."""
         return self.trap.trapstatistics.wireless_network_rssi
 
     @property
-    def unit_of_measurement(self):
+    def unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
         return SIGNAL_DBM
 
     @property
-    def device_class(self):
+    def device_class(self) -> str:
         """Return the class of this device, from component DEVICE_CLASSES."""
         return DEVICE_CLASS_SIGNAL_STRENGTH
 
@@ -195,17 +195,17 @@ class TemperatureSensor(VictorSmartKillEntity):
         return "temperature"
 
     @property
-    def state(self):
+    def state(self) -> float:
         """Return the state of the sensor."""
         return self.trap.trapstatistics.temperature_celcius
 
     @property
-    def unit_of_measurement(self):
+    def unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
         return TEMP_CELSIUS
 
     @property
-    def device_class(self):
+    def device_class(self) -> str:
         """Return the class of this device, from component DEVICE_CLASSES."""
         return DEVICE_CLASS_TEMPERATURE
 
@@ -226,19 +226,19 @@ class LastKillDateSensor(VictorSmartKillEntity):
         return "last_kill_date"
 
     @property
-    def state(self):
+    def state(self) -> Optional[str]:
         """Return the state of the sensor."""
         if self.trap.trapstatistics.last_kill_date:
             return dt.as_local(self.trap.trapstatistics.last_kill_date).isoformat()
         return None
 
     @property
-    def unit_of_measurement(self):
+    def unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
         return "ISO8601"
 
     @property
-    def device_class(self):
+    def device_class(self) -> str:
         """Return the class of this device, from component DEVICE_CLASSES."""
         return DEVICE_CLASS_TIMESTAMP
 
@@ -259,19 +259,19 @@ class LastReportDateSensor(VictorSmartKillEntity):
         return "last_report_date"
 
     @property
-    def state(self):
+    def state(self) -> Optional[str]:
         """Return the state of the sensor."""
         if self.trap.trapstatistics.last_report_date:
             return dt.as_local(self.trap.trapstatistics.last_report_date).isoformat()
         return None
 
     @property
-    def unit_of_measurement(self):
+    def unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
         return "ISO8601"
 
     @property
-    def device_class(self):
+    def device_class(self) -> str:
         """Return the class of this device, from component DEVICE_CLASSES."""
         return DEVICE_CLASS_TIMESTAMP
 
@@ -292,16 +292,16 @@ class BatterySensor(VictorSmartKillEntity):
         return "battery_level"
 
     @property
-    def state(self):
+    def state(self) -> int:
         """Return the state of the sensor."""
         return self.trap.trapstatistics.battery_level
 
     @property
-    def unit_of_measurement(self):
+    def unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
         return PERCENTAGE
 
     @property
-    def device_class(self):
+    def device_class(self) -> str:
         """Return the class of this device, from component DEVICE_CLASSES."""
         return DEVICE_CLASS_BATTERY

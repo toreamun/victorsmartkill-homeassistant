@@ -10,7 +10,7 @@ from homeassistant.config_entries import (
 from homeassistant.core import callback
 from httpx import HTTPStatusError
 from victor_smart_kill import VictorAsyncClient
-import voluptuous as vol
+import voluptuous as vol  # type: ignore
 
 from custom_components.victorsmartkill.const import (  # pylint: disable=unused-import
     CONF_PASSWORD,

@@ -1,6 +1,6 @@
 """VictorSmartKillEntity class."""
 from abc import ABC, abstractproperty
-from typing import List
+from typing import Any, Dict, List
 
 from homeassistant.const import ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE
 from homeassistant.helpers.update_coordinator import (
@@ -26,7 +26,7 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         self,
         trap_id: int,
         coordinator: DataUpdateCoordinator[List[Trap]],
-    ):
+    ) -> None:
         """Initialize VictorSmartKillEntity."""
         super().__init__(coordinator)
 
@@ -49,19 +49,19 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         pass
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Return the name of the sensor."""
         return f"{self.trap.name} {self._name_suffix}"
 
     @property
-    def unique_id(self):
+    def unique_id(self) -> str:
         """Return a unique ID to use for this entity."""
         # See requirements:
         # https://developers.home-assistant.io/docs/entity_registry_index#unique-id-requirements
         return f"{DOMAIN}_{self.trap.id}_{self._unique_id_suffix}"
 
     @property
-    def device_info(self):
+    def device_info(self) -> Dict[str, Any]:
         """Return device specific attributes."""
         # See: https://developers.home-assistant.io/docs/device_registry_index/#device-properties
         return {
@@ -77,8 +77,8 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         return []
 
     @property
-    def device_state_attributes(self):
-        """Return the state attributes."""
+    def device_state_attributes(self) -> Dict[str, Any]:
+        """Return device specific state attributes."""
         state_attributes = {
             ATTR_BATTERY_LEVEL: self.trap.trapstatistics.battery_level,
             ATTR_SSID: self.trap.ssid,
