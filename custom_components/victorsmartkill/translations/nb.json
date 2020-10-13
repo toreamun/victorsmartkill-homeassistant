@@ -4,7 +4,7 @@
     "step": {
       "user": {
         "title": "Victor Smart-Kill",
-        "description": "Hvis du trenger hjep til konfigurasjon ta en titt her: https://github.com/toreamun/victorsmartkill-homeassistant",
+        "description": "Benytt Victor Pest app brukernavn og passord.",
         "data": {
           "username": "Brukernavn",
           "password": "Passord"
@@ -12,7 +12,7 @@
       }
     },
     "error": {
-      "auth": "Brukernavn/Passord er feil."
+      "auth": "Brukernavn og/eller passord er feil."
     },
     "abort": {
       "already_configured": "Konto er allerede konfigurert."
