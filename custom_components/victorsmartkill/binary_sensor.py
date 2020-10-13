@@ -1,7 +1,7 @@
 """Binary sensor platform for Victor Smart-Kill."""
 from typing import Callable, Iterable, List, Optional
 
-from homeassistant.components.binary_sensor import BinarySensorDevice
+from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.typing import HomeAssistantType
@@ -27,7 +27,7 @@ async def async_setup_entry(
     async_add_entities(entities, False)
 
 
-class VictorSmartKillBinarySensor(VictorSmartKillEntity, BinarySensorDevice):
+class VictorSmartKillBinarySensor(VictorSmartKillEntity, BinarySensorEntity):
     """Victor Smart-Kill occupancy binary sensor class."""
 
     @property
