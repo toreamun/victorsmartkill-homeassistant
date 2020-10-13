@@ -277,7 +277,7 @@ class LastReportDateSensor(VictorSmartKillEntity):
 
 
 class BatterySensor(VictorSmartKillEntity):
-    """Kills present sensor class."""
+    """Battery sensor class."""
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
