@@ -135,12 +135,18 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
 
     async def _get_traps(self) -> List[Trap]:
         """Get list of traps from API."""
-        traps = await self._api.get_traps()
-        logging.debug(
-            "Received traps %s from Victor Smart-Kill API",
-            sorted([trap.id for trap in traps]),
-        )
-        return traps
+        try:
+            traps = await self._api.get_traps()
+            logging.debug(
+                "Received traps %s from Victor Smart-Kill API.",
+                sorted([trap.id for trap in traps]),
+            )
+            return traps
+        except Exception:
+            logging.debug(
+                "Error getting traps from Victor Smart-Kill API.", exc_info=True
+            )
+            raise
 
 
 async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry):
