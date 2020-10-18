@@ -87,7 +87,9 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
             ATTR_LAST_REPORT_DATE: dt.as_local(
                 self.trap.trapstatistics.last_report_date
             ),
-            ATTR_LAST_KILL_DATE: dt.as_local(self.trap.trapstatistics.last_kill_date),
+            ATTR_LAST_KILL_DATE: dt.as_local(self.trap.trapstatistics.last_kill_date)
+            if self.trap.trapstatistics.last_kill_date
+            else None,
         }
 
         for key in self._exclude_device_state_attributes:
