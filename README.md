@@ -5,6 +5,7 @@ Home Assistant integration for Victor Smart-Kill WI-FI electronic mouse and rat 
 ![Victor logo][victor-logo]
 
 [![GitHub Release][releases-shield]][releases]
+[![Language grade: Python][language-grade-shield]][lgtm-project]
 [![License][license-shield]](LICENSE)
 
 [![hacs][hacsbadge]][hacs]
@@ -37,6 +38,8 @@ The easiest way to add this to your Homeassistant installation is using [HACS]. 
 [maintenance-shield]: https://img.shields.io/badge/maintainer-Tore%20Amundsen%20%40toreamun-blue.svg
 [releases-shield]: https://img.shields.io/github/release/toreamun/victorsmartkill-homeassistant
 [releases]: https://github.com/toreamun/victorsmartkill-homeassistant/releases
+[language-grade-shield]: https://img.shields.io/lgtm/grade/python/g/toreamun/victorsmartkill-homeassistant.svg?logo=lgtm&logoWidth=18
+[lgtm-project]: https://lgtm.com/projects/g/toreamun/victorsmartkill-homeassistant/context:python
 [hacs]: https://github.com/custom-components/hacs
 [exampleimg]: example.png
 [victor-logo]: https://static.victorpest.com/skin/frontend/rwd/vpus/images/vpus-logo.jpg
