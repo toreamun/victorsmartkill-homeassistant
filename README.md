@@ -41,5 +41,5 @@ The easiest way to add this to your Homeassistant installation is using [HACS]. 
 [language-grade-shield]: https://img.shields.io/lgtm/grade/python/g/toreamun/victorsmartkill-homeassistant.svg?logo=lgtm&logoWidth=18
 [lgtm-project]: https://lgtm.com/projects/g/toreamun/victorsmartkill-homeassistant/context:python
 [hacs]: https://github.com/custom-components/hacs
-[exampleimg]: example.png
+[exampleimg]: https://raw.githubusercontent.com/toreamun/victorsmartkill-homeassistant/master/example.png
 [victor-logo]: https://static.victorpest.com/skin/frontend/rwd/vpus/images/vpus-logo.jpg
