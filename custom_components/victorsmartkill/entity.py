@@ -82,16 +82,25 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         state_attributes = {
             ATTR_BATTERY_LEVEL: self.trap.trapstatistics.battery_level,
             ATTR_SSID: self.trap.ssid,
-            ATTR_LATITUDE: float(self.trap.lat),
-            ATTR_LONGITUDE: float(self.trap.long),
-            ATTR_LAST_REPORT_DATE: dt.as_local(
-                self.trap.trapstatistics.last_report_date
-            ),
-            ATTR_LAST_KILL_DATE: dt.as_local(self.trap.trapstatistics.last_kill_date)
-            if self.trap.trapstatistics.last_kill_date
-            else None,
         }
 
+        if self.trap.trapstatistics.last_report_date:
+            state_attributes[ATTR_LAST_REPORT_DATE] = dt.as_local(
+                self.trap.trapstatistics.last_report_date
+            )
+
+        if self.trap.trapstatistics.last_kill_date:
+            state_attributes[ATTR_LAST_KILL_DATE] = dt.as_local(
+                self.trap.trapstatistics.last_kill_date
+            )
+
+        if self.trap.lat:
+            state_attributes[ATTR_LATITUDE] = self.trap.lat
+
+        if self.trap.long:
+            state_attributes[ATTR_LONGITUDE] = self.trap.long
+
+        # remove excluded attributes
         for key in self._exclude_device_state_attributes:
             if key in state_attributes:
                 del state_attributes[key]
