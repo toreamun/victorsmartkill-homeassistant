@@ -9,6 +9,6 @@
     "@toreamun"
   ],
   "requirements": [
-    "victor-smart-kill==0.0.5"
+    "victor-smart-kill==0.0.7"
   ]
 }
