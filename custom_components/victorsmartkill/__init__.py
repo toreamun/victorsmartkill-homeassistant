@@ -108,7 +108,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
             _LOGGER,
             update_method=self.async_update_data,
             name=DOMAIN,
-            update_interval=timedelta,
+            update_interval=update_interval,
         )
 
     async def async_close(self) -> None:
