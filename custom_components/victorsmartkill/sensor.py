@@ -1,4 +1,5 @@
 """Sensor platform for victorsmartkill."""
+import logging
 from typing import Callable, Iterable, List, Optional
 
 from homeassistant.config_entries import ConfigEntry
@@ -14,6 +15,7 @@ from homeassistant.const import (
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import dt
+from victor_smart_kill import Trap
 
 from custom_components.victorsmartkill.const import (
     ATTR_LAST_KILL_DATE,
@@ -24,6 +26,8 @@ from custom_components.victorsmartkill.const import (
 )
 from custom_components.victorsmartkill.entity import VictorSmartKillEntity
 
+_LOGGER = logging.getLogger(__name__)
+
 
 async def async_setup_entry(
     hass: HomeAssistantType,
@@ -32,9 +36,10 @@ async def async_setup_entry(
 ) -> None:
     """Set up sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
+    traps: List[Trap] = coordinator.data
 
     entities = []
-    for trap in coordinator.data:
+    for trap in traps:
         entities.extend(
             [
                 KillsPresentSensor(trap.id, coordinator),
@@ -47,6 +52,12 @@ async def async_setup_entry(
                 LastReportDateSensor(trap.id, coordinator),
                 BatterySensor(trap.id, coordinator),
             ]
+        )
+        _LOGGER.debug(
+            "Add %s sensors for trap named '%s' with id %d.",
+            [f"{type(entity).__name__}" for entity in entities],
+            trap.name,
+            trap.id,
         )
 
     async_add_entities(entities, False)

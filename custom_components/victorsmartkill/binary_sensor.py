@@ -1,10 +1,12 @@
 """Binary sensor platform for Victor Smart-Kill."""
+import logging
 from typing import Callable, Iterable, List, Optional
 
 from homeassistant.components.binary_sensor import BinarySensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.typing import HomeAssistantType
+from victor_smart_kill import Trap
 
 from custom_components.victorsmartkill.const import (
     ATTR_LAST_KILL_DATE,
@@ -12,6 +14,8 @@ from custom_components.victorsmartkill.const import (
     ICON_CAPTURED,
 )
 from custom_components.victorsmartkill.entity import VictorSmartKillEntity
+
+_LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
@@ -21,9 +25,18 @@ async def async_setup_entry(
 ) -> None:
     """Set up binary_sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    entities = [
-        VictorSmartKillBinarySensor(trap.id, coordinator) for trap in coordinator.data
-    ]
+    traps: List[Trap] = coordinator.data
+
+    entities = []
+    for trap in traps:
+        entities.extend([VictorSmartKillBinarySensor(trap.id, coordinator)])
+        _LOGGER.debug(
+            "Add %s binary sensors for trap named '%s' with id %d.",
+            [f"{type(entity).__name__}" for entity in entities],
+            trap.name,
+            trap.id,
+        )
+
     async_add_entities(entities, False)
 
 
