@@ -1,4 +1,5 @@
 """Adds config flow for Victor Smart-Kill."""
+import logging
 from typing import Any, Dict, Optional
 
 from homeassistant.config_entries import (
@@ -18,6 +19,8 @@ from custom_components.victorsmartkill.const import (  # pylint: disable=unused-
     DOMAIN,
     PLATFORMS,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
@@ -73,11 +76,25 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
         """Return true if credentials is valid."""
         try:
             async with VictorAsyncClient(username, password) as client:
+                _LOGGER.debug(
+                    "Fetch API-token for user '%s' to test for correct username and password.",
+                    username,
+                )
                 await client.fetch_token()
         except HTTPStatusError as ex:
             if ex.response.status_code == 400 or ex.response.status_code == 401:
+                _LOGGER.debug(
+                    "HTTP status %d: %s", ex.response.status_code, ex.response.text
+                )
                 return False
             raise
+        except Exception:
+            _LOGGER.debug(
+                "Unexpected error from Victor Smart-Kill API when fetching API-token.",
+                exc_info=True,
+            )
+            raise
+
         return True
 
 

@@ -38,6 +38,13 @@ async def async_setup(hass: HomeAssistantType, config: Config) -> bool:
 
 async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
+    _LOGGER.debug(
+        "Setup entry %s %s with scan interval %s.",
+        entry.domain,
+        entry.title,
+        SCAN_INTERVAL,
+    )
+
     if hass.data.get(DOMAIN) is None:
         hass.data.setdefault(DOMAIN, {})
         _LOGGER.info(STARTUP_MESSAGE)
@@ -47,6 +54,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
 
     coordinator = VictorSmartKillDataUpdateCoordinator(
         hass,
+        SCAN_INTERVAL,
         username=username,
         password=password,
     )
@@ -85,6 +93,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
     def __init__(
         self,
         hass: HomeAssistantType,
+        update_interval: timedelta,
         username: str,
         password: str,
     ) -> None:
@@ -99,11 +108,12 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
             _LOGGER,
             update_method=self.async_update_data,
             name=DOMAIN,
-            update_interval=SCAN_INTERVAL,
+            update_interval=timedelta,
         )
 
     async def async_close(self) -> None:
         """Close resources."""
+        self.logger.debug("Close API client.")
         await self._client.aclose()
 
     async def async_update_data(self) -> List[Trap]:
@@ -151,6 +161,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
 
 async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry):
     """Handle removal of an entry."""
+    _LOGGER.debug("Unload entry %s %s.", entry.domain, entry.title)
     coordinator = hass.data[DOMAIN][entry.entry_id]
     unloaded = all(
         await asyncio.gather(
