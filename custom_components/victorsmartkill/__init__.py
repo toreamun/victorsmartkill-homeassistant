@@ -69,7 +69,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
 
     @callback
     async def async_trap_list_changed(event: EventType):
-        logging.info(
+        _LOGGER.info(
             "Trap list hast changed (%s), reload integration entry.", event.data
         )
         await async_reload_entry(hass, entry)
@@ -116,7 +116,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
                 traps = await self._get_traps()
                 current_trap_ids = sorted([trap.id for trap in traps])
                 if previous_trap_ids != current_trap_ids:
-                    logging.debug(
+                    self.logger.debug(
                         "List of traps has changed from %s to %s.",
                         previous_trap_ids,
                         current_trap_ids,
@@ -137,13 +137,13 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
         """Get list of traps from API."""
         try:
             traps = await self._api.get_traps()
-            logging.debug(
+            self.logger.debug(
                 "Received traps %s from Victor Smart-Kill API.",
                 sorted([trap.id for trap in traps]),
             )
             return traps
         except Exception:
-            logging.debug(
+            self.logger.debug(
                 "Error getting traps from Victor Smart-Kill API.", exc_info=True
             )
             raise
