@@ -1,8 +1,10 @@
 """VictorSmartKillEntity class."""
 from abc import ABC, abstractproperty
+import logging
 from typing import Any, Dict, List
 
 from homeassistant.const import ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE
+from homeassistant.core import callback
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
@@ -17,6 +19,8 @@ from custom_components.victorsmartkill.const import (
     DOMAIN,
     MANUFACTURER,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class VictorSmartKillEntity(CoordinatorEntity, ABC):
@@ -39,6 +43,13 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
                 )
             )
         self.trap: Trap = trap
+
+        _LOGGER.debug(
+            "Initialized %s of trap with Victor id %d.",
+            type(self).__name__,
+            self.trap.id
+        )
+
 
     @abstractproperty
     def _name_suffix(self) -> str:
@@ -106,3 +117,14 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
                 del state_attributes[key]
 
         return state_attributes
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        _LOGGER.debug(
+            "New data from coordinator received by %s of trap with Victor id %d. Current state is now: %s",
+            type(self).__name__,
+            self.trap.id,
+            self.state,
+        )
+        super()._handle_coordinator_update()
