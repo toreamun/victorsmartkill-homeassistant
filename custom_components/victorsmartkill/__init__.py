@@ -98,7 +98,6 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
         password: str,
     ) -> None:
         """Initialize."""
-        self._hass = hass
         self._client = VictorAsyncClient(username, password)
         self._api = VictorApi(self._client)
         self.platforms: List[str] = []  # appended from async_setup_entry
@@ -132,7 +131,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
                         current_trap_ids,
                     )
 
-                    self._hass.bus.async_fire(
+                    self.hass.bus.async_fire(
                         EVENT_TRAP_LIST_CHANGED,
                         event_data={
                             "previous_traps": previous_trap_ids,
