@@ -1,4 +1,9 @@
-default_config:
+#default_config:
+
+automation:
+config:
+frontend:
+
 
 logger:
   default: debug
