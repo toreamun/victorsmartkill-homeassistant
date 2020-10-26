@@ -117,6 +117,12 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
 
     async def async_update_data(self) -> List[Trap]:
         """Update data via Victor Smart-Kill API."""
+        self.logger.debug(
+            "async_update_data running for %s, currently coordinating %d listeners.",
+            type(self).__name__,
+            len(self._listeners),
+        )
+
         try:
             if not self.data:
                 traps = await self._get_traps()
