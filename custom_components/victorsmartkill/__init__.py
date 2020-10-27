@@ -7,7 +7,7 @@ https://github.com/toreamun/victorsmartkill-homeassistant
 import asyncio
 from datetime import timedelta
 import logging
-from typing import List
+from typing import Callable, List
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config, callback
@@ -114,6 +114,31 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
         """Close resources."""
         self.logger.debug("Close API client.")
         await self._client.aclose()
+
+    @callback
+    def async_add_listener(
+        self, update_callback: Callable[[], None]
+    ) -> Callable[[], None]:
+        """Listen for data updates. Called by CoordinatorEntity."""
+        try:
+            return super().async_add_listener(update_callback)
+        except Exception:
+            self.logger.debug("async_add_listener() failed", exc_info=True)
+            raise
+        self.logger.debug(
+            "async_add_listener() called.",
+        )
+
+    async def async_refresh(self) -> None:
+        """Refresh data."""
+        try:
+            await super().async_refresh()
+        except Exception:
+            self.logger.debug("async_refresh() failed", exc_info=True)
+            raise
+        self.logger.debug(
+            "async_refresh() done, last_update_success is %s", self.last_update_success
+        )
 
     async def async_update_data(self) -> List[Trap]:
         """Update data via Victor Smart-Kill API."""
