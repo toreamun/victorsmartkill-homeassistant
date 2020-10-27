@@ -25,7 +25,7 @@ from custom_components.victorsmartkill.const import (
     STARTUP_MESSAGE,
 )
 
-SCAN_INTERVAL = timedelta(minutes=10)
+SCAN_INTERVAL = timedelta(minutes=5)
 
 _LOGGER = logging.getLogger(__name__)
 
