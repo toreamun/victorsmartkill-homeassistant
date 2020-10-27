@@ -1,5 +1,5 @@
 """VictorSmartKillEntity class."""
-from abc import ABC, abstractproperty
+from abc import ABC, abstractmethod
 import logging
 from typing import Any, Dict, List
 
@@ -47,15 +47,16 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         _LOGGER.debug(
             "Initialized %s of trap with Victor id %d.",
             type(self).__name__,
-            self.trap.id
+            self.trap.id,
         )
 
-
-    @abstractproperty
+    @property
+    @abstractmethod
     def _name_suffix(self) -> str:
         pass
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def _unique_id_suffix(self) -> str:
         pass
 
