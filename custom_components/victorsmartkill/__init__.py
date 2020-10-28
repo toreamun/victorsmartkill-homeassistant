@@ -69,7 +69,9 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
     for platform in PLATFORMS:
         if entry.options.get(platform, True):
             coordinator.platforms.append(platform)
-            hass.async_add_job(
+            # Use `hass.async_create_task` (not async_add_job) to avoid a circular
+            # dependency between the platform and the component
+            hass.async_create_task(
                 hass.config_entries.async_forward_entry_setup(entry, platform)
             )
 
