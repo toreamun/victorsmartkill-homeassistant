@@ -1,6 +1,6 @@
 """Sensor platform for victorsmartkill."""
 import logging
-from typing import Any, Callable, Dict, Iterable, List, Optional
+from typing import Any, Dict, List, Optional
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -15,7 +15,6 @@ from homeassistant.const import (
     TEMP_CELSIUS,
 )
 from homeassistant.core import callback
-from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
@@ -38,43 +37,54 @@ from custom_components.victorsmartkill.entity import VictorSmartKillEntity
 _LOGGER = logging.getLogger(__name__)
 
 
+# async def async_setup_entry(
+#     hass: HomeAssistantType,
+#     entry: ConfigEntry,
+#     async_add_entities: Callable[[Iterable[Entity], Optional[bool]], None],
+# ) -> None:
+#     """Set up sensor platform."""
+#     coordinator = hass.data[DOMAIN][entry.entry_id]
+#     traps: List[Trap] = coordinator.data
+
+#     entities = []
+#     for trap in traps:
+#         entities.extend(
+#             [
+#                 KillsPresentSensor(trap.id, coordinator),
+#                 TotalKillsSensor(trap.id, coordinator),
+#                 TotalEscapesSensor(trap.id, coordinator),
+#                 TotalRetreatsSensor(trap.id, coordinator),
+#                 WirelessNetworkRssiSensor(trap.id, coordinator),
+#                 TemperatureSensor(trap.id, coordinator),
+#                 LastKillDateSensor(trap.id, coordinator),
+#                 LastReportDateSensor(trap.id, coordinator),
+#                 BatterySensor(trap.id, coordinator),
+#             ]
+#         )
+#         _LOGGER.debug(
+#             "Add %s sensors for trap named '%s' with id %d.",
+#             [f"{type(entity).__name__}" for entity in entities],
+#             trap.name,
+#             trap.id,
+#         )
+
+#     async_add_entities(entities, False)
+
+
 async def async_setup_entry(
     hass: HomeAssistantType,
     entry: ConfigEntry,
-    async_add_entities: Callable[[Iterable[Entity], Optional[bool]], None],
-) -> None:
+    async_add_entities,
+):
     """Set up sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
     traps: List[Trap] = coordinator.data
-
-    entities = []
-    for trap in traps:
-        entities.extend(
-            [
-                LastKillDateSensor2(trap.id, coordinator),
-                # KillsPresentSensor(trap.id, coordinator),
-                # TotalKillsSensor(trap.id, coordinator),
-                # TotalEscapesSensor(trap.id, coordinator),
-                # TotalRetreatsSensor(trap.id, coordinator),
-                # WirelessNetworkRssiSensor(trap.id, coordinator),
-                # TemperatureSensor(trap.id, coordinator),
-                # LastKillDateSensor(trap.id, coordinator),
-                # LastReportDateSensor(trap.id, coordinator),
-                # BatterySensor(trap.id, coordinator),
-            ]
-        )
-        _LOGGER.debug(
-            "Add %s sensors for trap named '%s' with id %d.",
-            [f"{type(entity).__name__}" for entity in entities],
-            trap.name,
-            trap.id,
-        )
-
-    async_add_entities(entities, False)
+    entities = [LastReportDateSensor2(trap.id, coordinator) for trap in traps]
+    async_add_entities(entities, True)
 
 
-class LastKillDateSensor2(CoordinatorEntity):
-    """Last kill date sensor class."""
+class LastReportDateSensor2(CoordinatorEntity):
+    """Last report date sensor class."""
 
     def __init__(
         self,
@@ -99,6 +109,35 @@ class LastKillDateSensor2(CoordinatorEntity):
             type(self).__name__,
             self.trap.id,
         )
+
+    @property
+    def _exclude_device_state_attributes(self) -> List[str]:
+        return [ATTR_LAST_REPORT_DATE]
+
+    @property
+    def _name_suffix(self) -> str:
+        return "last report date"
+
+    @property
+    def _unique_id_suffix(self) -> str:
+        return "last_report_date_2"
+
+    @property
+    def state(self) -> Optional[str]:
+        """Return the state of the sensor."""
+        if self.trap.trapstatistics.last_report_date:
+            return dt.as_local(self.trap.trapstatistics.last_report_date).isoformat()
+        return None
+
+    @property
+    def unit_of_measurement(self) -> str:
+        """Return the unit of measurement of this entity."""
+        return "ISO8601"
+
+    @property
+    def device_class(self) -> str:
+        """Return the class of this device, from component DEVICE_CLASSES."""
+        return DEVICE_CLASS_TIMESTAMP
 
     @property
     def name(self) -> str:
@@ -186,35 +225,6 @@ class LastKillDateSensor2(CoordinatorEntity):
             self.state,
         )
         super()._handle_coordinator_update()
-
-    @property
-    def _exclude_device_state_attributes(self) -> List[str]:
-        return [ATTR_LAST_KILL_DATE]
-
-    @property
-    def _name_suffix(self) -> str:
-        return "last kill date"
-
-    @property
-    def _unique_id_suffix(self) -> str:
-        return "last_kill_date_2"
-
-    @property
-    def state(self) -> Optional[str]:
-        """Return the state of the sensor."""
-        if self.trap.trapstatistics.last_kill_date:
-            return dt.as_local(self.trap.trapstatistics.last_kill_date).isoformat()
-        return None
-
-    @property
-    def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
-        return "ISO8601"
-
-    @property
-    def device_class(self) -> str:
-        """Return the class of this device, from component DEVICE_CLASSES."""
-        return DEVICE_CLASS_TIMESTAMP
 
 
 class KillsPresentSensor(VictorSmartKillEntity):
