@@ -33,22 +33,20 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
     ) -> None:
         """Initialize VictorSmartKillEntity."""
         super().__init__(coordinator)
+        self.trap_id = trap_id
 
-        trap = next(t for t in coordinator.data if t.id == trap_id)
+    @property
+    def trap(self) -> Trap:
+        """Trap data of current trap."""
+        trap = next(t for t in self.coordinator.data if t.id == self.trap_id)
         if not trap:
             raise ValueError(
                 (
-                    f"Trap with id {trap_id} not found in list "
-                    f"{[t.id for t in coordinator.data]} of traps."
+                    f"Trap with id {self.trap_id} not found in list "
+                    f"{[t.id for t in self.coordinator.data]} of traps."
                 )
             )
-        self.trap: Trap = trap
-
-        _LOGGER.debug(
-            "Initialized %s of trap with Victor id %d.",
-            type(self).__name__,
-            self.trap.id,
-        )
+        return trap
 
     @property
     @abstractmethod
@@ -141,8 +139,10 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         _LOGGER.debug(
-            ("New data from coordinator received by %s of trap with Victor id %d."
-            " Current state is now: %s"),
+            (
+                "New data from coordinator received by %s of trap with Victor id %d."
+                " Current state is now: %s"
+            ),
             type(self).__name__,
             self.trap.id,
             self.state,
