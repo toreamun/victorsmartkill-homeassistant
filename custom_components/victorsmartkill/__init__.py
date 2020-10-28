@@ -122,14 +122,18 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
         self, update_callback: Callable[[], None]
     ) -> Callable[[], None]:
         """Listen for data updates. Called by CoordinatorEntity."""
+        self.logger.debug(
+            "START: async_add_listener()",
+        )
         try:
             return super().async_add_listener(update_callback)
         except Exception:
             self.logger.debug("async_add_listener() failed", exc_info=True)
             raise
-        self.logger.debug(
-            "async_add_listener() called.",
-        )
+        finally:
+            self.logger.debug(
+                "END: async_add_listener()",
+            )
 
     async def async_refresh(self) -> None:
         """Refresh data."""
