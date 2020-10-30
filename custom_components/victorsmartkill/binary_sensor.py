@@ -31,7 +31,7 @@ async def async_setup_entry(
     for trap in traps:
         entities.extend([VictorSmartKillBinarySensor(trap.id, coordinator)])
         _LOGGER.debug(
-            "Add %s binary sensors for trap named '%s' with id %d.",
+            "Add %s binary sensors for trap named '%s' with Victor trap id %d.",
             [f"{type(entity).__name__}" for entity in entities],
             trap.name,
             trap.id,

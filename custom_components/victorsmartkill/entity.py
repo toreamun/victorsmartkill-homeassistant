@@ -119,32 +119,15 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
 
     async def async_added_to_hass(self) -> None:
         """When entity is added to hass."""
-        try:
-            await super().async_added_to_hass()
-        except Exception:
-            _LOGGER.debug(
-                "%s async_added_to_hass() for trap id %d failed",
-                type(self).__name__,
-                self.trap.id,
-                exc_info=True,
-            )
-            raise
-        _LOGGER.debug(
-            "%s for trap id %d has been added to hass.",
-            type(self).__name__,
-            self.trap.id,
-        )
+        await super().async_added_to_hass()
+        _LOGGER.debug("%s has been added to hass.", self.entity_id)
 
     @callback
     def _handle_coordinator_update(self) -> None:
         """Handle updated data from the coordinator."""
         _LOGGER.debug(
-            (
-                "New data from coordinator received by %s of trap with Victor id %d."
-                " Current state is now: %s"
-            ),
-            type(self).__name__,
-            self.trap.id,
+            "%s received update from coordinator: %s",
+            self.entity_id,
             self.state,
         )
         super()._handle_coordinator_update()
