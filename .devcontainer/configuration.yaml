@@ -10,5 +10,6 @@ logger:
   logs:
     custom_components.victorsmartkill: debug
 
-ptvsd:
-  wait: True
+debugpy:
+  start: true
+  wait: true
