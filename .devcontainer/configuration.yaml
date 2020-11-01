@@ -6,7 +6,7 @@ frontend:
 
 
 logger:
-  default: debug
+  default: info
   logs:
     custom_components.victorsmartkill: debug
 
