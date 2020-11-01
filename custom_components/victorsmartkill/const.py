@@ -18,8 +18,6 @@ PLATFORMS = [BINARY_SENSOR, SENSOR]
 
 
 # Configuration and options
-CONF_USERNAME = "username"
-CONF_PASSWORD = "password"
 
 
 # state attributes

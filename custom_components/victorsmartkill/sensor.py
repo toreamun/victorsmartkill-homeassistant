@@ -17,6 +17,7 @@ from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import dt
 from victor_smart_kill import Trap
 
+from custom_components.victorsmartkill import IntegrationContext
 from custom_components.victorsmartkill.const import (
     ATTR_LAST_KILL_DATE,
     ATTR_LAST_REPORT_DATE,
@@ -35,22 +36,22 @@ async def async_setup_entry(
     async_add_entities: Callable[[Iterable[Entity], Optional[bool]], None],
 ) -> None:
     """Set up sensor platform."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    traps: List[Trap] = coordinator.data
+    context: IntegrationContext = hass.data[DOMAIN][entry.entry_id]
+    traps: List[Trap] = context.coordinator.data
 
     entities = []
     for trap in traps:
         entities.extend(
             [
-                KillsPresentSensor(trap.id, coordinator),
-                TotalKillsSensor(trap.id, coordinator),
-                TotalEscapesSensor(trap.id, coordinator),
-                TotalRetreatsSensor(trap.id, coordinator),
-                WirelessNetworkRssiSensor(trap.id, coordinator),
-                TemperatureSensor(trap.id, coordinator),
-                LastKillDateSensor(trap.id, coordinator),
-                LastReportDateSensor(trap.id, coordinator),
-                BatterySensor(trap.id, coordinator),
+                KillsPresentSensor(trap.id, context.coordinator),
+                TotalKillsSensor(trap.id, context.coordinator),
+                TotalEscapesSensor(trap.id, context.coordinator),
+                TotalRetreatsSensor(trap.id, context.coordinator),
+                WirelessNetworkRssiSensor(trap.id, context.coordinator),
+                TemperatureSensor(trap.id, context.coordinator),
+                LastKillDateSensor(trap.id, context.coordinator),
+                LastReportDateSensor(trap.id, context.coordinator),
+                BatterySensor(trap.id, context.coordinator),
             ]
         )
         _LOGGER.debug(

@@ -5,29 +5,37 @@ For more details about this integration, please refer to
 https://github.com/toreamun/victorsmartkill-homeassistant
 """
 import asyncio
+from dataclasses import dataclass, field
 from datetime import timedelta
 import logging
 from typing import Callable, List
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import Config, callback
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.core import CALLBACK_TYPE, Config, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.typing import EventType, HomeAssistantType
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from victor_smart_kill import Trap, VictorApi, VictorAsyncClient
 
 from custom_components.victorsmartkill.const import (
-    CONF_PASSWORD,
-    CONF_USERNAME,
     DOMAIN,
     EVENT_TRAP_LIST_CHANGED,
     PLATFORMS,
     STARTUP_MESSAGE,
 )
 
-SCAN_INTERVAL = timedelta(minutes=5)
+SCAN_INTERVAL = timedelta(minutes=10)
 
 _LOGGER = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class IntegrationContext:
+    """Integration context needed by platforms and/or unload."""
+
+    coordinator: DataUpdateCoordinator
+    unsubscribe_list: List[CALLBACK_TYPE] = field(default_factory=list)
 
 
 async def async_setup(hass: HomeAssistantType, config: Config) -> bool:
@@ -45,9 +53,12 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
         _LOGGER.info(STARTUP_MESSAGE)
 
     coordinator = await _async_initialize_coordinator(hass, entry)
-    hass.data[DOMAIN][entry.entry_id] = coordinator
+    context = IntegrationContext(coordinator=coordinator)
+
+    hass.data[DOMAIN][entry.entry_id] = context
+
     await _async_forward_platform_setup(hass, entry, coordinator)
-    _setup_reload_triggers(hass, entry)
+    _setup_reload(hass, entry, context)
 
     return True
 
@@ -56,20 +67,21 @@ async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry):
     """Handle removal of an entry."""
     _LOGGER.debug("async_unload_entry %s.", entry.title)
 
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    context: IntegrationContext = hass.data[DOMAIN][entry.entry_id]
     is_unloaded = all(
         await asyncio.gather(
             *[
                 hass.config_entries.async_forward_entry_unload(entry, platform)
-                for platform in coordinator.platforms
+                for platform in context.coordinator.platforms
             ]
         )
     )
 
     if is_unloaded:
-        coordinator = hass.data[DOMAIN].pop(entry.entry_id)
-        if coordinator:
-            await coordinator.async_close()
+        for unsubscribe in context.unsubscribe_list:
+            unsubscribe()
+        await context.coordinator.async_close()
+        hass.data[DOMAIN].pop(entry.entry_id)
 
     return is_unloaded
 
@@ -90,6 +102,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
         self.platforms: List[str] = platforms
         self._client = VictorAsyncClient(username, password)
         self._api = VictorApi(self._client)
+        self._close = False
 
         super().__init__(
             hass,
@@ -146,9 +159,17 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
         self.logger.debug("Listener %s added to coordinator.", update_callback.__name__)
         return remove_listener_callback
 
+    async def async_refresh(self) -> None:
+        """Refresh data."""
+        if self._close:
+            self.logger.debug("Coordinator is closed or closing. Ignore refresh.")
+        else:
+            await super().async_refresh()
+
     async def async_close(self) -> None:
         """Close resources."""
         self.logger.debug("Close API client.")
+        self._close = True
         await self._client.aclose()
 
     async def _get_traps(self) -> List[Trap]:
@@ -203,26 +224,25 @@ async def _async_forward_platform_setup(
         )
 
 
-def _setup_reload_triggers(hass: HomeAssistantType, entry: ConfigEntry):
+@callback
+async def _async_config_entry_changed(hass: HomeAssistantType, entry: ConfigEntry):
+    _LOGGER.info("Config entry has change. Reload integration.")
+    await hass.config_entries.async_reload(entry.entry_id)
+
+
+def _setup_reload(
+    hass: HomeAssistantType, entry: ConfigEntry, context: IntegrationContext
+):
     """Set up listeners of reload triggers."""
     # Listen for config entry changes and reload when changed.
-    @callback
-    async def async_config_entry_changed(hass: HomeAssistantType, entry: ConfigEntry):
-        _LOGGER.info("Config entry has change. Reload integration.")
-        await _async_reload_entry(hass, entry)
+    context.unsubscribe_list.append(
+        entry.add_update_listener(_async_config_entry_changed)
+    )
 
-    entry.add_update_listener(async_config_entry_changed)
-
-    # Listen for trap list changes and reload when changed (new traps etc.)
     @callback
     async def async_trap_list_changed(event: EventType):
         _LOGGER.info("Trap list hast changed (%s). Reload integration.", event.data)
-        await _async_reload_entry(hass, entry)
+        await hass.config_entries.async_reload(entry.entry_id)
 
+    # Listen for trap list changes and reload when changed (new traps etc.)
     hass.bus.async_listen_once(EVENT_TRAP_LIST_CHANGED, async_trap_list_changed)
-
-
-async def _async_reload_entry(hass: HomeAssistantType, entry: ConfigEntry):
-    """Reload entry."""
-    await async_unload_entry(hass, entry)
-    await async_setup_entry(hass, entry)
