@@ -18,6 +18,7 @@ PLATFORMS = [BINARY_SENSOR, SENSOR]
 
 
 # Configuration and options
+DEFAULT_UPDATE_INTERVAL_MINUTES = 10
 
 
 # state attributes

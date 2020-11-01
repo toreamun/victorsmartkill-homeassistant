@@ -23,7 +23,8 @@
       "user": {
         "data": {
           "binary_sensor": "Binary sensor enabled",
-          "sensor": "Sensor enabled"
+          "sensor": "Sensor enabled",
+          "scan_interval": "Scan interval in minutes"
         }
       }
     }

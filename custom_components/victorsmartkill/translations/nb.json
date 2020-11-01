@@ -23,7 +23,8 @@
       "user": {
         "data": {
           "binary_sensor": "Binær sensor aktivert",
-          "sensor": "Sensor aktivert"
+          "sensor": "Sensor aktivert",
+          "scan_interval": "Oppdateringsintervall i minutter"
         }
       }
     }

@@ -8,15 +8,18 @@ from homeassistant.config_entries import (
     ConfigFlow,
     OptionsFlow,
 )
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_SCAN_INTERVAL, CONF_USERNAME
 from homeassistant.core import callback
+import homeassistant.helpers.config_validation as cv
 from httpx import HTTPStatusError
 from victor_smart_kill import VictorAsyncClient
 import voluptuous as vol  # type: ignore
 
 from custom_components.victorsmartkill.const import (  # pylint: disable=unused-import
+    BINARY_SENSOR,
+    DEFAULT_UPDATE_INTERVAL_MINUTES,
     DOMAIN,
-    PLATFORMS,
+    SENSOR,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -115,14 +118,22 @@ class VictorSmartKillOptionsFlowHandler(OptionsFlow):
             self.options.update(user_input)
             return await self._update_options()
 
+        options = {
+            vol.Required(
+                BINARY_SENSOR, default=self.options.get(BINARY_SENSOR, True)
+            ): bool,
+            vol.Required(SENSOR, default=self.options.get(SENSOR, True)): bool,
+            vol.Optional(
+                CONF_SCAN_INTERVAL,
+                default=self.options.get(
+                    CONF_SCAN_INTERVAL, DEFAULT_UPDATE_INTERVAL_MINUTES
+                ),
+            ): cv.positive_int,
+        }
+
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required(x, default=self.options.get(x, True)): bool
-                    for x in sorted(PLATFORMS)
-                }
-            ),
+            data_schema=vol.Schema(options),
         )
 
     async def _update_options(self):

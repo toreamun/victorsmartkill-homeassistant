@@ -11,7 +11,7 @@ import logging
 from typing import Callable, List
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_PASSWORD, CONF_SCAN_INTERVAL, CONF_USERNAME
 from homeassistant.core import CALLBACK_TYPE, Config, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.typing import EventType, HomeAssistantType
@@ -19,13 +19,12 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 from victor_smart_kill import Trap, VictorApi, VictorAsyncClient
 
 from custom_components.victorsmartkill.const import (
+    DEFAULT_UPDATE_INTERVAL_MINUTES,
     DOMAIN,
     EVENT_TRAP_LIST_CHANGED,
     PLATFORMS,
     STARTUP_MESSAGE,
 )
-
-SCAN_INTERVAL = timedelta(minutes=10)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -78,10 +77,10 @@ async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry):
     )
 
     if is_unloaded:
+        hass.data[DOMAIN].pop(entry.entry_id)
+        await context.coordinator.async_close()
         for unsubscribe in context.unsubscribe_list:
             unsubscribe()
-        await context.coordinator.async_close()
-        hass.data[DOMAIN].pop(entry.entry_id)
 
     return is_unloaded
 
@@ -196,9 +195,18 @@ async def _async_initialize_coordinator(
     enabled_platforms = [
         platform for platform in PLATFORMS if entry.options.get(platform, True)
     ]
+    update_interval_minutes = entry.options.get(
+        CONF_SCAN_INTERVAL, DEFAULT_UPDATE_INTERVAL_MINUTES
+    )
+    update_interval_minutes = (
+        update_interval_minutes
+        if update_interval_minutes > 0
+        else DEFAULT_UPDATE_INTERVAL_MINUTES
+    )
+    update_interval = timedelta(minutes=update_interval_minutes)
 
     coordinator = VictorSmartKillDataUpdateCoordinator(
-        hass, _LOGGER, SCAN_INTERVAL, username, password, enabled_platforms
+        hass, _LOGGER, update_interval, username, password, enabled_platforms
     )
 
     # Initialize coordinator with trap data
