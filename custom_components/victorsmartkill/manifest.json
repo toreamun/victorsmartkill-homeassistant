@@ -1,6 +1,7 @@
 {
   "domain": "victorsmartkill",
   "name": "Victor Smart-Kill",
+  "version": "2021.3.0",
   "documentation": "https://github.com/toreamun/victorsmartkill-homeassistant",
   "issue_tracker": "https://github.com/toreamun/victorsmartkill-homeassistant/issues",
   "dependencies": [],
@@ -9,6 +10,6 @@
     "@toreamun"
   ],
   "requirements": [
-    "victor-smart-kill==0.1.0"
+    "victor-smart-kill==2021.3.0"
   ]
 }
