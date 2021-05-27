@@ -11,5 +11,6 @@
   ],
   "requirements": [
     "victor-smart-kill==2021.3.0"
-  ]
+  ],
+  "iot_class": "cloud_polling"
 }
