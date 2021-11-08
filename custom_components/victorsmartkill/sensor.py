@@ -9,6 +9,7 @@ from homeassistant.const import (
     DEVICE_CLASS_SIGNAL_STRENGTH,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_TIMESTAMP,
+    ENTITY_CATEGORY_DIAGNOSTIC,
     PERCENTAGE,
     TEMP_CELSIUS,
 )
@@ -67,6 +68,8 @@ async def async_setup_entry(
 class KillsPresentSensor(VictorSmartKillEntity):
     """Kills present sensor class."""
 
+    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
+
     @property
     def _name_suffix(self) -> str:
         return "kills present"
@@ -89,6 +92,8 @@ class KillsPresentSensor(VictorSmartKillEntity):
 class TotalKillsSensor(VictorSmartKillEntity):
     """Total kills sensor class."""
 
+    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
+
     @property
     def _name_suffix(self) -> str:
         return "total kills"
@@ -110,6 +115,8 @@ class TotalKillsSensor(VictorSmartKillEntity):
 
 class TotalEscapesSensor(VictorSmartKillEntity):
     """Total escapes sensor class."""
+
+    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
@@ -136,6 +143,8 @@ class TotalEscapesSensor(VictorSmartKillEntity):
 
 class TotalRetreatsSensor(VictorSmartKillEntity):
     """Total retreats sensor class."""
+
+    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
@@ -196,6 +205,8 @@ class WirelessNetworkRssiSensor(VictorSmartKillEntity):
 class TemperatureSensor(VictorSmartKillEntity):
     """Temperature sensor class."""
 
+    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
+
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
         return [ATTR_LAST_KILL_DATE]
@@ -226,6 +237,8 @@ class TemperatureSensor(VictorSmartKillEntity):
 
 class LastKillDateSensor(VictorSmartKillEntity):
     """Last kill date sensor class."""
+
+    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
