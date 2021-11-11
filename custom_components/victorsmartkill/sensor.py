@@ -5,6 +5,8 @@ from typing import Callable, Iterable, List, Optional
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
+    ATTR_LATITUDE,
+    ATTR_LONGITUDE,
     DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_SIGNAL_STRENGTH,
     DEVICE_CLASS_TEMPERATURE,
@@ -71,6 +73,10 @@ class KillsPresentSensor(VictorSmartKillEntity):
     _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
+    def _exclude_device_state_attributes(self) -> List[str]:
+        return [ATTR_LATITUDE, ATTR_LONGITUDE]
+
+    @property
     def _name_suffix(self) -> str:
         return "kills present"
 
@@ -93,6 +99,10 @@ class TotalKillsSensor(VictorSmartKillEntity):
     """Total kills sensor class."""
 
     _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
+
+    @property
+    def _exclude_device_state_attributes(self) -> List[str]:
+        return [ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
     def _name_suffix(self) -> str:
@@ -120,7 +130,7 @@ class TotalEscapesSensor(VictorSmartKillEntity):
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
-        return [ATTR_LAST_KILL_DATE]
+        return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
     def _name_suffix(self) -> str:
@@ -148,7 +158,7 @@ class TotalRetreatsSensor(VictorSmartKillEntity):
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
-        return [ATTR_LAST_KILL_DATE]
+        return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
     def _name_suffix(self) -> str:
@@ -176,7 +186,7 @@ class WirelessNetworkRssiSensor(VictorSmartKillEntity):
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
-        return [ATTR_LAST_KILL_DATE]
+        return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
     def _name_suffix(self) -> str:
@@ -209,7 +219,7 @@ class TemperatureSensor(VictorSmartKillEntity):
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
-        return [ATTR_LAST_KILL_DATE]
+        return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
     def _name_suffix(self) -> str:
@@ -242,7 +252,7 @@ class LastKillDateSensor(VictorSmartKillEntity):
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
-        return [ATTR_LAST_KILL_DATE]
+        return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
     def _name_suffix(self) -> str:
@@ -277,7 +287,7 @@ class LastReportDateSensor(VictorSmartKillEntity):
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
-        return [ATTR_LAST_REPORT_DATE]
+        return [ATTR_LAST_REPORT_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
     def _name_suffix(self) -> str:
@@ -312,7 +322,7 @@ class BatterySensor(VictorSmartKillEntity):
 
     @property
     def _exclude_device_state_attributes(self) -> List[str]:
-        return [ATTR_LAST_KILL_DATE, ATTR_BATTERY_LEVEL]
+        return [ATTR_LAST_KILL_DATE, ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
     def _name_suffix(self) -> str:
