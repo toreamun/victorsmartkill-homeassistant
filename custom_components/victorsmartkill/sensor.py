@@ -73,7 +73,7 @@ class KillsPresentSensor(VictorSmartKillEntity):
     _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
-    def _exclude_device_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> List[str]:
         return [ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -101,7 +101,7 @@ class TotalKillsSensor(VictorSmartKillEntity):
     _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
-    def _exclude_device_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> List[str]:
         return [ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -129,7 +129,7 @@ class TotalEscapesSensor(VictorSmartKillEntity):
     _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
-    def _exclude_device_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> List[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -157,7 +157,7 @@ class TotalRetreatsSensor(VictorSmartKillEntity):
     _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
-    def _exclude_device_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> List[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -185,7 +185,7 @@ class WirelessNetworkRssiSensor(VictorSmartKillEntity):
     _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
-    def _exclude_device_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> List[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -218,7 +218,7 @@ class TemperatureSensor(VictorSmartKillEntity):
     _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
-    def _exclude_device_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> List[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -251,7 +251,7 @@ class LastKillDateSensor(VictorSmartKillEntity):
     _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
-    def _exclude_device_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> List[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -286,7 +286,7 @@ class LastReportDateSensor(VictorSmartKillEntity):
     _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
-    def _exclude_device_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> List[str]:
         return [ATTR_LAST_REPORT_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -321,7 +321,7 @@ class BatterySensor(VictorSmartKillEntity):
     _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
-    def _exclude_device_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> List[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
