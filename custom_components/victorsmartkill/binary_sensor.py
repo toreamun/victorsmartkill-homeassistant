@@ -45,7 +45,7 @@ class VictorSmartKillBinarySensor(VictorSmartKillEntity, BinarySensorEntity):
     """Victor Smart-Kill occupancy binary sensor class."""
 
     @property
-    def _exclude_device_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> List[str]:
         return [ATTR_LAST_KILL_DATE]
 
     @property

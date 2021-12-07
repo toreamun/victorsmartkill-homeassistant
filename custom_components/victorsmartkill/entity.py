@@ -83,11 +83,11 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         }
 
     @property
-    def _exclude_device_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> List[str]:
         return []
 
     @property
-    def device_state_attributes(self) -> Dict[str, Any]:
+    def extra_state_attributes(self) -> Dict[str, Any]:
         """Return device specific state attributes."""
         state_attributes = {
             ATTR_BATTERY_LEVEL: self.trap.trapstatistics.battery_level,
@@ -111,7 +111,7 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
             state_attributes[ATTR_LONGITUDE] = self.trap.long
 
         # remove excluded attributes
-        for key in self._exclude_device_state_attributes:
+        for key in self._exclude_extra_state_attributes:
             if key in state_attributes:
                 del state_attributes[key]
 
