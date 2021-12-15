@@ -5,6 +5,7 @@ from typing import Any, Dict, List
 
 from homeassistant.const import ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE
 from homeassistant.core import callback
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
@@ -71,16 +72,16 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         return f"{DOMAIN}_{self.trap.id}_{self._unique_id_suffix}"
 
     @property
-    def device_info(self) -> Dict[str, Any]:
+    def device_info(self) -> DeviceInfo:
         """Return device specific attributes."""
         # See: https://developers.home-assistant.io/docs/device_registry_index/#device-properties
-        return {
-            "identifiers": {(DOMAIN, self.trap.id, self.trap.serial_number)},
-            "name": self.trap.name,
-            "model": f"{self.trap.trap_type_verbose} ({self.trap.trapstatistics.board_type})",
-            "manufacturer": MANUFACTURER,
-            "sw_version": self.trap.trapstatistics.firmware_version,
-        }
+        return DeviceInfo(
+            identifiers={(DOMAIN, self.trap.id, self.trap.serial_number)},
+            name=self.trap.name,
+            model=f"{self.trap.trap_type_verbose} ({self.trap.trapstatistics.board_type})",
+            manufacturer=MANUFACTURER,
+            sw_version=self.trap.trapstatistics.firmware_version,
+        )
 
     @property
     def _exclude_extra_state_attributes(self) -> List[str]:
