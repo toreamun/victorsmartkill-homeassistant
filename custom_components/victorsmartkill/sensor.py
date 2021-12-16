@@ -2,15 +2,12 @@
 import logging
 from typing import Callable, Iterable, List, Optional
 
+from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
     ATTR_LATITUDE,
     ATTR_LONGITUDE,
-    DEVICE_CLASS_BATTERY,
-    DEVICE_CLASS_SIGNAL_STRENGTH,
-    DEVICE_CLASS_TEMPERATURE,
-    DEVICE_CLASS_TIMESTAMP,
     ENTITY_CATEGORY_DIAGNOSTIC,
     PERCENTAGE,
     TEMP_CELSIUS,
@@ -207,9 +204,9 @@ class WirelessNetworkRssiSensor(VictorSmartKillEntity):
         return SIGNAL_DBM
 
     @property
-    def device_class(self) -> str:
-        """Return the class of this device, from component DEVICE_CLASSES."""
-        return DEVICE_CLASS_SIGNAL_STRENGTH
+    def device_class(self) -> SensorDeviceClass:
+        """Return the class of this device."""
+        return SensorDeviceClass.SIGNAL_STRENGTH
 
 
 class TemperatureSensor(VictorSmartKillEntity):
@@ -240,9 +237,9 @@ class TemperatureSensor(VictorSmartKillEntity):
         return TEMP_CELSIUS
 
     @property
-    def device_class(self) -> str:
-        """Return the class of this device, from component DEVICE_CLASSES."""
-        return DEVICE_CLASS_TEMPERATURE
+    def device_class(self) -> SensorDeviceClass:
+        """Return the class of this device."""
+        return SensorDeviceClass.TEMPERATURE
 
 
 class LastKillDateSensor(VictorSmartKillEntity):
@@ -275,9 +272,9 @@ class LastKillDateSensor(VictorSmartKillEntity):
         return "ISO8601"
 
     @property
-    def device_class(self) -> str:
-        """Return the class of this device, from component DEVICE_CLASSES."""
-        return DEVICE_CLASS_TIMESTAMP
+    def device_class(self) -> SensorDeviceClass:
+        """Return the class of this device."""
+        return SensorDeviceClass.TIMESTAMP
 
 
 class LastReportDateSensor(VictorSmartKillEntity):
@@ -310,9 +307,9 @@ class LastReportDateSensor(VictorSmartKillEntity):
         return "ISO8601"
 
     @property
-    def device_class(self) -> str:
+    def device_class(self) -> SensorDeviceClass:
         """Return the class of this device, from component DEVICE_CLASSES."""
-        return DEVICE_CLASS_TIMESTAMP
+        return SensorDeviceClass.TIMESTAMP
 
 
 class BatterySensor(VictorSmartKillEntity):
@@ -343,6 +340,6 @@ class BatterySensor(VictorSmartKillEntity):
         return PERCENTAGE
 
     @property
-    def device_class(self) -> str:
-        """Return the class of this device, from component DEVICE_CLASSES."""
-        return DEVICE_CLASS_BATTERY
+    def device_class(self) -> SensorDeviceClass:
+        """Return the class of this device."""
+        return SensorDeviceClass.BATTERY

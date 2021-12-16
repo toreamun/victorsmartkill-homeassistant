@@ -2,7 +2,10 @@
 import logging
 from typing import Callable, Iterable, List, Optional
 
-from homeassistant.components.binary_sensor import BinarySensorEntity
+from homeassistant.components.binary_sensor import (
+    BinarySensorDeviceClass,
+    BinarySensorEntity,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.typing import HomeAssistantType
@@ -57,9 +60,9 @@ class VictorSmartKillBinarySensor(VictorSmartKillEntity, BinarySensorEntity):
         return "capture"
 
     @property
-    def device_class(self) -> str:
+    def device_class(self) -> BinarySensorDeviceClass:
         """Return the class of this binary_sensor."""
-        return "occupancy"
+        return BinarySensorDeviceClass.OCCUPANCY
 
     @property
     def is_on(self) -> bool:
