@@ -10,6 +10,7 @@ from homeassistant.const import (
     ATTR_LONGITUDE,
     ENTITY_CATEGORY_DIAGNOSTIC,
     PERCENTAGE,
+    SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     TEMP_CELSIUS,
 )
 from homeassistant.helpers.entity import Entity
@@ -23,7 +24,6 @@ from custom_components.victorsmartkill.const import (
     ATTR_LAST_REPORT_DATE,
     DOMAIN,
     ICON_COUNTER,
-    SIGNAL_DBM,
 )
 from custom_components.victorsmartkill.entity import VictorSmartKillEntity
 
@@ -201,11 +201,11 @@ class WirelessNetworkRssiSensor(VictorSmartKillEntity):
     @property
     def unit_of_measurement(self) -> str:
         """Return the unit of measurement of this entity."""
-        return SIGNAL_DBM
+        return SIGNAL_STRENGTH_DECIBELS_MILLIWATT
 
     @property
     def device_class(self) -> SensorDeviceClass:
-        """Return the class of this device."""
+        """Return the class of this sensor."""
         return SensorDeviceClass.SIGNAL_STRENGTH
 
 
@@ -238,7 +238,7 @@ class TemperatureSensor(VictorSmartKillEntity):
 
     @property
     def device_class(self) -> SensorDeviceClass:
-        """Return the class of this device."""
+        """Return the class of this sensor."""
         return SensorDeviceClass.TEMPERATURE
 
 
@@ -273,7 +273,7 @@ class LastKillDateSensor(VictorSmartKillEntity):
 
     @property
     def device_class(self) -> SensorDeviceClass:
-        """Return the class of this device."""
+        """Return the class of this sensor."""
         return SensorDeviceClass.TIMESTAMP
 
 
@@ -308,7 +308,7 @@ class LastReportDateSensor(VictorSmartKillEntity):
 
     @property
     def device_class(self) -> SensorDeviceClass:
-        """Return the class of this device, from component DEVICE_CLASSES."""
+        """Return the class of this sensor."""
         return SensorDeviceClass.TIMESTAMP
 
 
@@ -341,5 +341,5 @@ class BatterySensor(VictorSmartKillEntity):
 
     @property
     def device_class(self) -> SensorDeviceClass:
-        """Return the class of this device."""
+        """Return the class of this sensor."""
         return SensorDeviceClass.BATTERY

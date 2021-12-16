@@ -26,11 +26,6 @@ ATTR_LAST_REPORT_DATE = "last_report_date"
 ATTR_LAST_KILL_DATE = "last_kill_date"
 ATTR_SSID = "ssid"
 
-
-# units
-SIGNAL_DBM = "dBm"
-
-
 # events
 EVENT_TRAP_LIST_CHANGED = "victorsmartkill_trap_list_changed"
 
