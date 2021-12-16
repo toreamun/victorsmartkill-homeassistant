@@ -8,12 +8,11 @@ from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
     ATTR_LATITUDE,
     ATTR_LONGITUDE,
-    ENTITY_CATEGORY_DIAGNOSTIC,
     PERCENTAGE,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     TEMP_CELSIUS,
 )
-from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.entity import Entity, EntityCategory
 from homeassistant.helpers.typing import HomeAssistantType
 from homeassistant.util import dt
 from victor_smart_kill import Trap
@@ -67,8 +66,6 @@ async def async_setup_entry(
 class KillsPresentSensor(VictorSmartKillEntity):
     """Kills present sensor class."""
 
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
-
     @property
     def _exclude_extra_state_attributes(self) -> List[str]:
         return [ATTR_LATITUDE, ATTR_LONGITUDE]
@@ -91,11 +88,14 @@ class KillsPresentSensor(VictorSmartKillEntity):
         """Return the icon of the sensor."""
         return ICON_COUNTER
 
+    @property
+    def entity_category(self) -> EntityCategory:
+        """Return the category of the entity."""
+        return EntityCategory.DIAGNOSTIC
+
 
 class TotalKillsSensor(VictorSmartKillEntity):
     """Total kills sensor class."""
-
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
     def _exclude_extra_state_attributes(self) -> List[str]:
@@ -119,11 +119,14 @@ class TotalKillsSensor(VictorSmartKillEntity):
         """Return the icon of the sensor."""
         return ICON_COUNTER
 
+    @property
+    def entity_category(self) -> EntityCategory:
+        """Return the category of the entity."""
+        return EntityCategory.DIAGNOSTIC
+
 
 class TotalEscapesSensor(VictorSmartKillEntity):
     """Total escapes sensor class."""
-
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
     def _exclude_extra_state_attributes(self) -> List[str]:
@@ -147,11 +150,14 @@ class TotalEscapesSensor(VictorSmartKillEntity):
         """Return the icon of the sensor."""
         return ICON_COUNTER
 
+    @property
+    def entity_category(self) -> EntityCategory:
+        """Return the category of the entity."""
+        return EntityCategory.DIAGNOSTIC
+
 
 class TotalRetreatsSensor(VictorSmartKillEntity):
     """Total retreats sensor class."""
-
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
     def _exclude_extra_state_attributes(self) -> List[str]:
@@ -175,11 +181,14 @@ class TotalRetreatsSensor(VictorSmartKillEntity):
         """Return the icon of the sensor."""
         return ICON_COUNTER
 
+    @property
+    def entity_category(self) -> EntityCategory:
+        """Return the category of the entity."""
+        return EntityCategory.DIAGNOSTIC
+
 
 class WirelessNetworkRssiSensor(VictorSmartKillEntity):
     """Wireless network rssi sensor class."""
-
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
     def _exclude_extra_state_attributes(self) -> List[str]:
@@ -208,11 +217,14 @@ class WirelessNetworkRssiSensor(VictorSmartKillEntity):
         """Return the class of this sensor."""
         return SensorDeviceClass.SIGNAL_STRENGTH
 
+    @property
+    def entity_category(self) -> EntityCategory:
+        """Return the category of the entity."""
+        return EntityCategory.DIAGNOSTIC
+
 
 class TemperatureSensor(VictorSmartKillEntity):
     """Temperature sensor class."""
-
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
     def _exclude_extra_state_attributes(self) -> List[str]:
@@ -241,11 +253,14 @@ class TemperatureSensor(VictorSmartKillEntity):
         """Return the class of this sensor."""
         return SensorDeviceClass.TEMPERATURE
 
+    @property
+    def entity_category(self) -> EntityCategory:
+        """Return the category of the entity."""
+        return EntityCategory.DIAGNOSTIC
+
 
 class LastKillDateSensor(VictorSmartKillEntity):
     """Last kill date sensor class."""
-
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
     def _exclude_extra_state_attributes(self) -> List[str]:
@@ -276,11 +291,14 @@ class LastKillDateSensor(VictorSmartKillEntity):
         """Return the class of this sensor."""
         return SensorDeviceClass.TIMESTAMP
 
+    @property
+    def entity_category(self) -> EntityCategory:
+        """Return the category of the entity."""
+        return EntityCategory.DIAGNOSTIC
+
 
 class LastReportDateSensor(VictorSmartKillEntity):
     """Last report date sensor class."""
-
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
     def _exclude_extra_state_attributes(self) -> List[str]:
@@ -311,11 +329,14 @@ class LastReportDateSensor(VictorSmartKillEntity):
         """Return the class of this sensor."""
         return SensorDeviceClass.TIMESTAMP
 
+    @property
+    def entity_category(self) -> EntityCategory:
+        """Return the category of the entity."""
+        return EntityCategory.DIAGNOSTIC
+
 
 class BatterySensor(VictorSmartKillEntity):
     """Battery sensor class."""
-
-    _attr_entity_category = ENTITY_CATEGORY_DIAGNOSTIC
 
     @property
     def _exclude_extra_state_attributes(self) -> List[str]:
@@ -343,3 +364,8 @@ class BatterySensor(VictorSmartKillEntity):
     def device_class(self) -> SensorDeviceClass:
         """Return the class of this sensor."""
         return SensorDeviceClass.BATTERY
+
+    @property
+    def entity_category(self) -> EntityCategory:
+        """Return the category of the entity."""
+        return EntityCategory.DIAGNOSTIC
