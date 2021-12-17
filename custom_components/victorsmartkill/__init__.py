@@ -4,6 +4,8 @@ Custom integration to integrate victorsmartkill with Home Assistant.
 For more details about this integration, please refer to
 https://github.com/toreamun/victorsmartkill-homeassistant
 """
+from __future__ import annotations
+
 import asyncio
 from dataclasses import dataclass, field
 from datetime import timedelta
@@ -34,7 +36,7 @@ class IntegrationContext:
     """Integration context needed by platforms and/or unload."""
 
     coordinator: DataUpdateCoordinator
-    unsubscribe_list: List[CALLBACK_TYPE] = field(default_factory=list)
+    unsubscribe_list: list[CALLBACK_TYPE] = field(default_factory=list)
 
 
 async def async_setup(hass: HomeAssistantType, config: Config) -> bool:
@@ -95,10 +97,10 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
         update_interval: timedelta,
         username: str,
         password: str,
-        platforms: List[str],
+        platforms: list[str],
     ) -> None:
         """Initialize."""
-        self.platforms: List[str] = platforms
+        self.platforms: list[str] = platforms
         self._client = VictorAsyncClient(username, password)
         self._api = VictorApi(self._client)
         self._close = False
@@ -121,15 +123,15 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
             update_interval,
         )
 
-    async def async_update_data(self) -> List[Trap]:
+    async def async_update_data(self) -> list[Trap]:
         """Update data via Victor Smart-Kill API."""
         try:
             if not self.data:
                 traps = await self._get_traps()
             else:
-                previous_trap_ids = sorted([trap.id for trap in self.data])
+                previous_trap_ids = sorted(trap.id for trap in self.data)
                 traps = await self._get_traps()
-                current_trap_ids = sorted([trap.id for trap in traps])
+                current_trap_ids = sorted(trap.id for trap in traps)
                 if previous_trap_ids != current_trap_ids:
                     self.logger.debug(
                         "List of traps has changed from %s to %s.",
@@ -171,13 +173,13 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
         self._close = True
         await self._client.aclose()
 
-    async def _get_traps(self) -> List[Trap]:
+    async def _get_traps(self) -> list[Trap]:
         """Get list of traps from API."""
         try:
             traps = await self._api.get_traps()
             self.logger.debug(
                 "Received traps list %s from Victor Smart-Kill API.",
-                sorted([trap.id for trap in traps]),
+                sorted(trap.id for trap in traps),
             )
             return traps
         except Exception:

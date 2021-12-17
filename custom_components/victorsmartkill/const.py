@@ -1,5 +1,7 @@
 """Constants for victorsmartkill."""
 # Base component constants
+from __future__ import annotations
+
 MANUFACTURER = "VictorPest.com"
 NAME = "Victor Smart-Kill"
 DOMAIN = "victorsmartkill"

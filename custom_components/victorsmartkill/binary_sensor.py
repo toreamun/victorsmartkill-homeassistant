@@ -1,6 +1,8 @@
 """Binary sensor platform for Victor Smart-Kill."""
+from __future__ import annotations
+
 import logging
-from typing import Callable, Iterable, List, Optional
+from typing import Callable, Iterable
 
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
@@ -25,11 +27,11 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistantType,
     entry: ConfigEntry,
-    async_add_entities: Callable[[Iterable[Entity], Optional[bool]], None],
+    async_add_entities: Callable[[Iterable[Entity], bool | None], None],
 ) -> None:
     """Set up binary_sensor platform."""
     context: IntegrationContext = hass.data[DOMAIN][entry.entry_id]
-    traps: List[Trap] = context.coordinator.data
+    traps: list[Trap] = context.coordinator.data
 
     entities = []
     for trap in traps:
@@ -48,7 +50,7 @@ class VictorSmartKillBinarySensor(VictorSmartKillEntity, BinarySensorEntity):
     """Victor Smart-Kill occupancy binary sensor class."""
 
     @property
-    def _exclude_extra_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> list[str]:
         return [ATTR_LAST_KILL_DATE]
 
     @property

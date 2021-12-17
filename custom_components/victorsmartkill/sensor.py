@@ -1,6 +1,8 @@
 """Sensor platform for victorsmartkill."""
+from __future__ import annotations
+
 import logging
-from typing import Callable, Iterable, List, Optional
+from typing import Callable, Iterable
 
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
@@ -32,11 +34,11 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(
     hass: HomeAssistantType,
     entry: ConfigEntry,
-    async_add_entities: Callable[[Iterable[Entity], Optional[bool]], None],
+    async_add_entities: Callable[[Iterable[Entity], bool | None], None],
 ) -> None:
     """Set up sensor platform."""
     context: IntegrationContext = hass.data[DOMAIN][entry.entry_id]
-    traps: List[Trap] = context.coordinator.data
+    traps: list[Trap] = context.coordinator.data
 
     entities = []
     for trap in traps:
@@ -67,7 +69,7 @@ class KillsPresentSensor(VictorSmartKillEntity):
     """Kills present sensor class."""
 
     @property
-    def _exclude_extra_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> list[str]:
         return [ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -98,7 +100,7 @@ class TotalKillsSensor(VictorSmartKillEntity):
     """Total kills sensor class."""
 
     @property
-    def _exclude_extra_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> list[str]:
         return [ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -110,7 +112,7 @@ class TotalKillsSensor(VictorSmartKillEntity):
         return "total_kills"
 
     @property
-    def state(self) -> Optional[int]:
+    def state(self) -> int | None:
         """Return the state of the sensor as total kills."""
         return self.trap.trapstatistics.total_kills
 
@@ -129,7 +131,7 @@ class TotalEscapesSensor(VictorSmartKillEntity):
     """Total escapes sensor class."""
 
     @property
-    def _exclude_extra_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> list[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -141,7 +143,7 @@ class TotalEscapesSensor(VictorSmartKillEntity):
         return "total_escapes"
 
     @property
-    def state(self) -> Optional[int]:
+    def state(self) -> int | None:
         """Return the state of the sensor as total escapes."""
         return self.trap.trapstatistics.total_escapes
 
@@ -160,7 +162,7 @@ class TotalRetreatsSensor(VictorSmartKillEntity):
     """Total retreats sensor class."""
 
     @property
-    def _exclude_extra_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> list[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -172,7 +174,7 @@ class TotalRetreatsSensor(VictorSmartKillEntity):
         return "total_retreats"
 
     @property
-    def state(self) -> Optional[int]:
+    def state(self) -> int | None:
         """Return the state of the sensor as total retreats."""
         return self.trap.trapstatistics.total_retreats
 
@@ -191,7 +193,7 @@ class WirelessNetworkRssiSensor(VictorSmartKillEntity):
     """Wireless network rssi sensor class."""
 
     @property
-    def _exclude_extra_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> list[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -227,7 +229,7 @@ class TemperatureSensor(VictorSmartKillEntity):
     """Temperature sensor class."""
 
     @property
-    def _exclude_extra_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> list[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -263,7 +265,7 @@ class LastKillDateSensor(VictorSmartKillEntity):
     """Last kill date sensor class."""
 
     @property
-    def _exclude_extra_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> list[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -275,7 +277,7 @@ class LastKillDateSensor(VictorSmartKillEntity):
         return "last_kill_date"
 
     @property
-    def state(self) -> Optional[str]:
+    def state(self) -> str | None:
         """Return the state of the sensor."""
         if self.trap.trapstatistics.last_kill_date:
             return dt.as_local(self.trap.trapstatistics.last_kill_date).isoformat()
@@ -301,7 +303,7 @@ class LastReportDateSensor(VictorSmartKillEntity):
     """Last report date sensor class."""
 
     @property
-    def _exclude_extra_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> list[str]:
         return [ATTR_LAST_REPORT_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property
@@ -313,7 +315,7 @@ class LastReportDateSensor(VictorSmartKillEntity):
         return "last_report_date"
 
     @property
-    def state(self) -> Optional[str]:
+    def state(self) -> str | None:
         """Return the state of the sensor."""
         if self.trap.trapstatistics.last_report_date:
             return dt.as_local(self.trap.trapstatistics.last_report_date).isoformat()
@@ -339,7 +341,7 @@ class BatterySensor(VictorSmartKillEntity):
     """Battery sensor class."""
 
     @property
-    def _exclude_extra_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> list[str]:
         return [ATTR_LAST_KILL_DATE, ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE]
 
     @property

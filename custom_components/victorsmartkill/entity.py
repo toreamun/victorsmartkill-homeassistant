@@ -1,7 +1,9 @@
 """VictorSmartKillEntity class."""
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 from homeassistant.const import ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE
 from homeassistant.core import callback
@@ -30,7 +32,7 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
     def __init__(
         self,
         trap_id: int,
-        coordinator: DataUpdateCoordinator[List[Trap]],
+        coordinator: DataUpdateCoordinator[list[Trap]],
     ) -> None:
         """Initialize VictorSmartKillEntity."""
         super().__init__(coordinator)
@@ -42,10 +44,8 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         trap = next(t for t in self.coordinator.data if t.id == self.trap_id)
         if not trap:
             raise ValueError(
-                (
-                    f"Trap with id {self.trap_id} not found in list "
-                    f"{[t.id for t in self.coordinator.data]} of traps."
-                )
+                f"Trap with id {self.trap_id} not found in list "
+                f"{[t.id for t in self.coordinator.data]} of traps."
             )
         return trap
 
@@ -84,11 +84,11 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         )
 
     @property
-    def _exclude_extra_state_attributes(self) -> List[str]:
+    def _exclude_extra_state_attributes(self) -> list[str]:
         return []
 
     @property
-    def extra_state_attributes(self) -> Dict[str, Any]:
+    def extra_state_attributes(self) -> dict[str, Any]:
         """Return device specific state attributes."""
         state_attributes = {
             ATTR_BATTERY_LEVEL: self.trap.trapstatistics.battery_level,
