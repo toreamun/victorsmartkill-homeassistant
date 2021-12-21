@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import logging
-from typing import Any
 
 from homeassistant.config_entries import (
     CONN_CLASS_CLOUD_POLL,
@@ -12,6 +11,7 @@ from homeassistant.config_entries import (
 )
 from homeassistant.const import CONF_PASSWORD, CONF_SCAN_INTERVAL, CONF_USERNAME
 from homeassistant.core import callback
+from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
 from httpx import HTTPStatusError
 from victor_smart_kill import VictorAsyncClient
@@ -37,9 +37,7 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
         """Initialize."""
         self._errors = {}
 
-    async def async_step_user(
-        self, user_input: dict[str, Any] | None = None
-    ) -> dict[str, Any]:
+    async def async_step_user(self, user_input: dict | None = None) -> FlowResult:
         """Handle a flow initiated by the user."""
         self._errors = {}
 
@@ -66,7 +64,9 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
         """Get the options flow for this handler."""
         return VictorSmartKillOptionsFlowHandler(config_entry)
 
-    async def _show_config_form(self, user_input):  # pylint: disable=unused-argument
+    async def _show_config_form(
+        self, user_input  # pylint: disable=unused-argument
+    ) -> FlowResult:
         """Show the configuration form to edit location data."""
         return self.async_show_form(
             step_id="user",
@@ -105,16 +105,18 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
 class VictorSmartKillOptionsFlowHandler(OptionsFlow):
     """Victor Smart-Kill config flow options handler."""
 
-    def __init__(self, config_entry):
+    def __init__(self, config_entry: ConfigEntry):
         """Initialize HACS options flow."""
         self.config_entry = config_entry
         self.options = dict(config_entry.options)
 
-    async def async_step_init(self, user_input=None):  # pylint: disable=unused-argument
+    async def async_step_init(
+        self, user_input=None  # pylint: disable=unused-argument
+    ) -> FlowResult:
         """Manage the options."""
         return await self.async_step_user()
 
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(self, user_input=None) -> FlowResult:
         """Handle a flow initialized by the user."""
         if user_input is not None:
             self.options.update(user_input)
@@ -138,7 +140,7 @@ class VictorSmartKillOptionsFlowHandler(OptionsFlow):
             data_schema=vol.Schema(options),
         )
 
-    async def _update_options(self):
+    async def _update_options(self) -> FlowResult:
         """Update config entry options."""
         return self.async_create_entry(
             title=self.config_entry.data.get(CONF_USERNAME), data=self.options
