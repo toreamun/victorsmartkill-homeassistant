@@ -3,12 +3,7 @@ from __future__ import annotations
 
 import logging
 
-from homeassistant.config_entries import (
-    CONN_CLASS_CLOUD_POLL,
-    ConfigEntry,
-    ConfigFlow,
-    OptionsFlow,
-)
+from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
 from homeassistant.const import CONF_PASSWORD, CONF_SCAN_INTERVAL, CONF_USERNAME
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
@@ -31,7 +26,6 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
     """Config flow for Victor Smart-Kill."""
 
     VERSION = 1
-    CONNECTION_CLASS = CONN_CLASS_CLOUD_POLL
 
     def __init__(self):
         """Initialize."""
