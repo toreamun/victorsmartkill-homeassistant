@@ -115,10 +115,9 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
 
         logger.info(
             (
-                "Data update coordinator for Victor Smart-Kill account %s "
+                "Data update coordinator for Victor Smart-Kill "
                 "initialized with %s platforms and update interval %s."
             ),
-            username,
             platforms,
             update_interval,
         )

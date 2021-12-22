@@ -81,8 +81,7 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
         try:
             async with VictorAsyncClient(username, password) as client:
                 _LOGGER.debug(
-                    "Fetch API-token for user '%s' to test for correct username and password.",
-                    username,
+                    "Fetch API-token to test for correct username and password.",
                 )
                 await client.fetch_token()
         except HTTPStatusError as ex:
