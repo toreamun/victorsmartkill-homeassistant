@@ -1,0 +1,31 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Victor Smart-Kill",
+        "description": "Använd användarnamn och lösenord från Victor Pest app.",
+        "data": {
+          "username": "Användarnamn",
+          "password": "Lösenord"
+        }
+      }
+    },
+    "error": {
+      "auth": "Fel användarnamn och/eller lösenord."
+    },
+    "abort": {
+      "already_configured": "Kontot är redan konfigurerat."
+    }
+  },
+  "options": {
+    "step": {
+      "user": {
+        "data": {
+          "binary_sensor": "Binär sensor aktiverad",
+          "sensor": "Sensor aktiverad",
+          "scan_interval": "Skanningsintervall i minuter"
+        }
+      }
+    }
+  }
+}
