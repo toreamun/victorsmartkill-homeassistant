@@ -13,7 +13,12 @@ import logging
 from typing import Callable
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_PASSWORD, CONF_SCAN_INTERVAL, CONF_USERNAME
+from homeassistant.const import (
+    CONF_PASSWORD,
+    CONF_SCAN_INTERVAL,
+    CONF_USERNAME,
+    Platform,
+)
 from homeassistant.core import CALLBACK_TYPE, Config, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.typing import EventType, HomeAssistantType
@@ -24,11 +29,12 @@ from custom_components.victorsmartkill.const import (
     DEFAULT_UPDATE_INTERVAL_MINUTES,
     DOMAIN,
     EVENT_TRAP_LIST_CHANGED,
-    PLATFORMS,
     STARTUP_MESSAGE,
 )
 
 _LOGGER = logging.getLogger(__name__)
+
+PLATFORMS = [Platform.BINARY_SENSOR, Platform.SENSOR]
 
 
 @dataclass(frozen=True)

@@ -13,12 +13,6 @@ ICON_COUNTER = "mdi:counter"
 ICON_CAPTURED = "mdi:emoticon-dead-outline"
 
 
-# Platforms
-BINARY_SENSOR = "binary_sensor"
-SENSOR = "sensor"
-PLATFORMS = [BINARY_SENSOR, SENSOR]
-
-
 # Configuration and options
 DEFAULT_UPDATE_INTERVAL_MINUTES = 10
 
