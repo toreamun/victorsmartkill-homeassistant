@@ -174,6 +174,12 @@ class TotalRetreatsSensor(VictorSmartKillEntity):
         return "total_retreats"
 
     @property
+    def entity_registry_enabled_default(self) -> bool:
+        """Return if the entity should be enabled when first added to the entity registry."""
+        # temperature is not reported by all versions of traps
+        return False
+
+    @property
     def state(self) -> int | None:
         """Return the state of the sensor as total retreats."""
         return self.trap.trapstatistics.total_retreats
@@ -239,6 +245,12 @@ class TemperatureSensor(VictorSmartKillEntity):
     @property
     def _unique_id_suffix(self) -> str:
         return "temperature"
+
+    @property
+    def entity_registry_enabled_default(self) -> bool:
+        """Return if the entity should be enabled when first added to the entity registry."""
+        # temperature is not reported by all versions of traps
+        return self.state is not None
 
     @property
     def state(self) -> float:
