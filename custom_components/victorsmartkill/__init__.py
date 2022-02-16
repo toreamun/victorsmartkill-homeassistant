@@ -6,7 +6,6 @@ https://github.com/toreamun/victorsmartkill-homeassistant
 """
 from __future__ import annotations
 
-import asyncio
 from dataclasses import dataclass, field
 from datetime import timedelta
 import logging
@@ -61,10 +60,10 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
 
     coordinator = await _async_initialize_coordinator(hass, entry)
     context = IntegrationContext(coordinator=coordinator)
-
     hass.data[DOMAIN][entry.entry_id] = context
 
-    await _async_forward_platform_setup(hass, entry, coordinator)
+    hass.config_entries.async_setup_platforms(entry, coordinator.platforms)
+
     _setup_reload(hass, entry, context)
 
     return True
@@ -75,13 +74,8 @@ async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry):
     _LOGGER.debug("async_unload_entry %s.", entry.title)
 
     context: IntegrationContext = hass.data[DOMAIN][entry.entry_id]
-    is_unloaded = all(
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(entry, platform)
-                for platform in context.coordinator.platforms
-            ]
-        )
+    is_unloaded = hass.config_entries.async_unload_platforms(
+        entry, context.coordinator.platforms
     )
 
     if is_unloaded:
@@ -222,21 +216,6 @@ async def _async_initialize_coordinator(
         raise ConfigEntryNotReady
 
     return coordinator
-
-
-async def _async_forward_platform_setup(
-    hass: HomeAssistantType,
-    entry: ConfigEntry,
-    coodinator: VictorSmartKillDataUpdateCoordinator,
-):
-    """Forward setup to each platform."""
-    for platform in coodinator.platforms:
-        _LOGGER.debug("Forward setup to %s platform.", platform)
-        # Use `hass.async_create_task` to avoid a circular
-        # dependency between the platform and the component
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, platform)
-        )
 
 
 @callback
