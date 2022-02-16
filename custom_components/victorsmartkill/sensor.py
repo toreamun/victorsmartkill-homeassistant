@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 from typing import Callable, Iterable
 
+from homeassistant import util
 from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -16,8 +17,7 @@ from homeassistant.const import (
 )
 from homeassistant.helpers.entity import Entity, EntityCategory
 from homeassistant.helpers.typing import HomeAssistantType
-from homeassistant.util import dt
-from victor_smart_kill import Trap
+import victor_smart_kill as victor
 
 from custom_components.victorsmartkill import IntegrationContext
 from custom_components.victorsmartkill.const import (
@@ -38,7 +38,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up sensor platform."""
     context: IntegrationContext = hass.data[DOMAIN][entry.entry_id]
-    traps: list[Trap] = context.coordinator.data
+    traps: list[victor.Trap] = context.coordinator.data
 
     entities = []
     for trap in traps:
@@ -292,7 +292,7 @@ class LastKillDateSensor(VictorSmartKillEntity):
     def state(self) -> str | None:
         """Return the state of the sensor."""
         if self.trap.trapstatistics.last_kill_date:
-            return dt.as_local(self.trap.trapstatistics.last_kill_date).isoformat()
+            return util.dt.as_local(self.trap.trapstatistics.last_kill_date).isoformat()
         return None
 
     @property
@@ -330,7 +330,9 @@ class LastReportDateSensor(VictorSmartKillEntity):
     def state(self) -> str | None:
         """Return the state of the sensor."""
         if self.trap.trapstatistics.last_report_date:
-            return dt.as_local(self.trap.trapstatistics.last_report_date).isoformat()
+            return util.dt.as_local(
+                self.trap.trapstatistics.last_report_date
+            ).isoformat()
         return None
 
     @property

@@ -6,8 +6,8 @@ https://github.com/toreamun/victorsmartkill-homeassistant
 """
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from datetime import timedelta
+import dataclasses as dc
+import datetime as dt
 import logging
 from typing import Callable
 
@@ -22,7 +22,7 @@ from homeassistant.core import CALLBACK_TYPE, Config, callback
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.typing import EventType, HomeAssistantType
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from victor_smart_kill import Trap, VictorApi, VictorAsyncClient
+import victor_smart_kill as victor
 
 from custom_components.victorsmartkill.const import (
     DEFAULT_UPDATE_INTERVAL_MINUTES,
@@ -36,12 +36,12 @@ _LOGGER = logging.getLogger(__name__)
 PLATFORMS = [Platform.BINARY_SENSOR, Platform.SENSOR]
 
 
-@dataclass(frozen=True)
+@dc.dataclass(frozen=True)
 class IntegrationContext:
     """Integration context needed by platforms and/or unload."""
 
     coordinator: DataUpdateCoordinator
-    unsubscribe_list: list[CALLBACK_TYPE] = field(default_factory=list)
+    unsubscribe_list: list[CALLBACK_TYPE] = dc.field(default_factory=list)
 
 
 async def async_setup(hass: HomeAssistantType, config: Config) -> bool:
@@ -87,22 +87,22 @@ async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry):
     return is_unloaded
 
 
-class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[Trap]]):
+class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Trap]]):
     """Class to manage fetching data from the API."""
 
     def __init__(
         self,
         hass: HomeAssistantType,
         logger: logging.Logger,
-        update_interval: timedelta,
+        update_interval: dt.timedelta,
         username: str,
         password: str,
         platforms: list[str],
     ) -> None:
         """Initialize."""
         self.platforms: list[str] = platforms
-        self._client = VictorAsyncClient(username, password)
-        self._api = VictorApi(self._client)
+        self._client = victor.VictorAsyncClient(username, password)
+        self._api = victor.VictorApi(self._client)
         self._close = False
 
         super().__init__(
@@ -122,7 +122,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[Trap]]):
             update_interval,
         )
 
-    async def async_update_data(self) -> list[Trap]:
+    async def async_update_data(self) -> list[victor.Trap]:
         """Update data via Victor Smart-Kill API."""
         try:
             if not self.data:
@@ -172,7 +172,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[Trap]]):
         self._close = True
         await self._client.aclose()
 
-    async def _get_traps(self) -> list[Trap]:
+    async def _get_traps(self) -> list[victor.Trap]:
         """Get list of traps from API."""
         try:
             traps = await self._api.get_traps()
@@ -204,7 +204,7 @@ async def _async_initialize_coordinator(
         if update_interval_minutes > 0
         else DEFAULT_UPDATE_INTERVAL_MINUTES
     )
-    update_interval = timedelta(minutes=update_interval_minutes)
+    update_interval = dt.timedelta(minutes=update_interval_minutes)
 
     coordinator = VictorSmartKillDataUpdateCoordinator(
         hass, _LOGGER, update_interval, username, password, enabled_platforms

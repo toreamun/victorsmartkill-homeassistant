@@ -13,8 +13,8 @@ from homeassistant.const import (
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
-from httpx import HTTPStatusError
-from victor_smart_kill import VictorAsyncClient
+import httpx
+import victor_smart_kill as victor
 import voluptuous as vol  # type: ignore
 
 from custom_components.victorsmartkill.const import (  # pylint: disable=unused-import
@@ -76,12 +76,12 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
     async def _test_credentials(self, username, password):
         """Return true if credentials is valid."""
         try:
-            async with VictorAsyncClient(username, password) as client:
+            async with victor.VictorAsyncClient(username, password) as client:
                 _LOGGER.debug(
                     "Fetch API-token to test for correct username and password.",
                 )
                 await client.fetch_token()
-        except HTTPStatusError as ex:
+        except httpx.HTTPStatusError as ex:
             if ex.response.status_code == 400 or ex.response.status_code == 401:
                 _LOGGER.debug(
                     "HTTP status %d: %s", ex.response.status_code, ex.response.text

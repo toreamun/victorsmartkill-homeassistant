@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 import logging
 from typing import Any
 
+from homeassistant import util
 from homeassistant.const import ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE
 from homeassistant.core import callback
 from homeassistant.helpers.entity import DeviceInfo
@@ -12,8 +13,7 @@ from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
-from homeassistant.util import dt
-from victor_smart_kill import Trap
+import victor_smart_kill as victor
 
 from custom_components.victorsmartkill.const import (
     ATTR_LAST_KILL_DATE,
@@ -32,14 +32,14 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
     def __init__(
         self,
         trap_id: int,
-        coordinator: DataUpdateCoordinator[list[Trap]],
+        coordinator: DataUpdateCoordinator[list[victor.Trap]],
     ) -> None:
         """Initialize VictorSmartKillEntity."""
         super().__init__(coordinator)
         self.trap_id = trap_id
 
     @property
-    def trap(self) -> Trap:
+    def trap(self) -> victor.Trap:
         """Trap data of current trap."""
         trap = next(t for t in self.coordinator.data if t.id == self.trap_id)
         if not trap:
@@ -97,12 +97,12 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         }
 
         if self.trap.trapstatistics.last_report_date:
-            state_attributes[ATTR_LAST_REPORT_DATE] = dt.as_local(
+            state_attributes[ATTR_LAST_REPORT_DATE] = util.dt.as_local(
                 self.trap.trapstatistics.last_report_date
             )
 
         if self.trap.trapstatistics.last_kill_date:
-            state_attributes[ATTR_LAST_KILL_DATE] = dt.as_local(
+            state_attributes[ATTR_LAST_KILL_DATE] = util.dt.as_local(
                 self.trap.trapstatistics.last_kill_date
             )
 

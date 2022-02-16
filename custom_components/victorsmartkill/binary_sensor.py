@@ -11,7 +11,7 @@ from homeassistant.components.binary_sensor import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.typing import HomeAssistantType
-from victor_smart_kill import Trap
+import victor_smart_kill as victor
 
 from custom_components.victorsmartkill import IntegrationContext
 from custom_components.victorsmartkill.const import (
@@ -31,7 +31,7 @@ async def async_setup_entry(
 ) -> None:
     """Set up binary_sensor platform."""
     context: IntegrationContext = hass.data[DOMAIN][entry.entry_id]
-    traps: list[Trap] = context.coordinator.data
+    traps: list[victor.Trap] = context.coordinator.data
 
     entities = []
     for trap in traps:
