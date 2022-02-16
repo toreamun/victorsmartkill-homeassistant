@@ -4,7 +4,12 @@ from __future__ import annotations
 import logging
 
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
-from homeassistant.const import CONF_PASSWORD, CONF_SCAN_INTERVAL, CONF_USERNAME
+from homeassistant.const import (
+    CONF_PASSWORD,
+    CONF_SCAN_INTERVAL,
+    CONF_USERNAME,
+    Platform,
+)
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
@@ -13,10 +18,8 @@ from victor_smart_kill import VictorAsyncClient
 import voluptuous as vol  # type: ignore
 
 from custom_components.victorsmartkill.const import (  # pylint: disable=unused-import
-    BINARY_SENSOR,
     DEFAULT_UPDATE_INTERVAL_MINUTES,
     DOMAIN,
-    SENSOR,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -117,9 +120,12 @@ class VictorSmartKillOptionsFlowHandler(OptionsFlow):
 
         options = {
             vol.Required(
-                BINARY_SENSOR, default=self.options.get(BINARY_SENSOR, True)
+                Platform.BINARY_SENSOR,
+                default=self.options.get(Platform.BINARY_SENSOR, True),
             ): bool,
-            vol.Required(SENSOR, default=self.options.get(SENSOR, True)): bool,
+            vol.Required(
+                Platform.SENSOR, default=self.options.get(Platform.SENSOR, True)
+            ): bool,
             vol.Optional(
                 CONF_SCAN_INTERVAL,
                 default=self.options.get(
