@@ -74,7 +74,7 @@ async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry):
     _LOGGER.debug("async_unload_entry %s.", entry.title)
 
     context: IntegrationContext = hass.data[DOMAIN][entry.entry_id]
-    is_unloaded = hass.config_entries.async_unload_platforms(
+    is_unloaded = await hass.config_entries.async_unload_platforms(
         entry, context.coordinator.platforms
     )
 
