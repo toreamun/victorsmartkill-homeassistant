@@ -78,9 +78,10 @@ class VictorSmartKillEntity(CoordinatorEntity, ABC):
         return DeviceInfo(
             identifiers={(DOMAIN, self.trap.id, self.trap.serial_number)},
             name=self.trap.name,
-            model=f"{self.trap.trap_type_verbose} ({self.trap.trapstatistics.board_type})",
+            model=self.trap.trap_type_verbose,
             manufacturer=MANUFACTURER,
             sw_version=self.trap.trapstatistics.firmware_version,
+            hw_version=self.trap.trapstatistics.board_type,
         )
 
     @property
