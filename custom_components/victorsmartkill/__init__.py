@@ -10,7 +10,7 @@ import asyncio
 from dataclasses import dataclass, field
 from datetime import timedelta
 import logging
-from typing import Callable, List
+from typing import Callable
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_PASSWORD, CONF_SCAN_INTERVAL, CONF_USERNAME
@@ -87,7 +87,7 @@ async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry):
     return is_unloaded
 
 
-class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[List[Trap]]):
+class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[Trap]]):
     """Class to manage fetching data from the API."""
 
     def __init__(
