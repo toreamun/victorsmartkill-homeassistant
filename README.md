@@ -2,7 +2,7 @@
 
 Home Assistant integration for Victor Smart-Kill WI-FI electronic mouse and rat traps from [VictorPest.com].
 
-![Victor logo][victor-logo]
+<img src="https://play-lh.googleusercontent.com/tfSd-O7Qwc8p8kYzTbJlDlq-nZzUyRHCMEvM87155kTtwEpVP7iNMgNzg2gWujjZ0jmq=s360-rw" width="128" alt="Victor logo">
 
 [![GitHub Release][releases-shield]][releases]
 [![Language grade: Python][language-grade-shield]][lgtm-project]
@@ -42,4 +42,3 @@ The easiest way to add this to your Homeassistant installation is using [HACS]. 
 [lgtm-project]: https://lgtm.com/projects/g/toreamun/victorsmartkill-homeassistant/context:python
 [hacs]: https://github.com/custom-components/hacs
 [exampleimg]: https://raw.githubusercontent.com/toreamun/victorsmartkill-homeassistant/master/example.png
-[victor-logo]: https://static.victorpest.com/skin/frontend/rwd/vpus/images/vpus-logo.jpg
