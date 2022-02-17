@@ -20,15 +20,34 @@ The easiest way to add this to your Homeassistant installation is using [HACS]. 
 
 ## Manual installation
 
-1. Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
-2. If you do not have a `custom_components` directory (folder) there, you need to create it.
-3. In the `custom_components` directory (folder) create a new folder called `victorsmartkill`.
-4. Download _all_ the files from the `custom_components/victorsmartkill/` directory (folder) in this repository.
-5. Place the files you downloaded in the new directory (folder) you created.
-6. Restart Home Assistant
-7. In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Victor Smart-Kill"
+- Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
+- If you do not have a `custom_components` directory (folder) there, you need to create it.
+- Change dircetory to `custom_components`.
+- Download lastest version 
 
----
+```
+wget https://github.com/toreamun/victorsmartkill-homeassistant/releases/latest/download/victorsmartkill.zip
+```
+
+- Unzip victorsmartkill.zip into folder victorsmartkill
+
+```
+unzip victorsmartkill.zip -d victorsmartkill       
+```
+
+- Delete victorsmartkill.zip
+
+```
+rm victorsmartkill.zip
+```
+
+- Restart Home Assistant
+- Tøm nettleseren sin cache. Hvis du ikke gjør dette risikerer du å ikke finne integrasjonen i listen av tilgjengelige integrasjoner.
+
+- Place the files you downloaded in the new directory (folder) you created.
+- Restart Home Assistant
+- In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Victor Smart-Kill"
+
 
 [victorpest.com]: https://www.victorpest.com/
 [buymecoffee]: https://www.buymeacoffee.com/toreamun
