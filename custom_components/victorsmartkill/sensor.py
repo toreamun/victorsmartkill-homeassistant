@@ -1,11 +1,16 @@
 """Sensor platform for victorsmartkill."""
 from __future__ import annotations
 
+import dataclasses as dc
 import logging
 from typing import Callable, Iterable
 
 from homeassistant import util
-from homeassistant.components.sensor import SensorDeviceClass
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorEntityDescription,
+)
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
@@ -16,7 +21,8 @@ from homeassistant.const import (
     TEMP_CELSIUS,
 )
 from homeassistant.helpers.entity import Entity, EntityCategory
-from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.helpers.typing import HomeAssistantType, StateType
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 import victor_smart_kill as victor
 
 from custom_components.victorsmartkill import IntegrationContext
@@ -42,19 +48,7 @@ async def async_setup_entry(
 
     entities = []
     for trap in traps:
-        entities.extend(
-            [
-                KillsPresentSensor(trap.id, context.coordinator),
-                TotalKillsSensor(trap.id, context.coordinator),
-                TotalEscapesSensor(trap.id, context.coordinator),
-                TotalRetreatsSensor(trap.id, context.coordinator),
-                WirelessNetworkRssiSensor(trap.id, context.coordinator),
-                TemperatureSensor(trap.id, context.coordinator),
-                LastKillDateSensor(trap.id, context.coordinator),
-                LastReportDateSensor(trap.id, context.coordinator),
-                BatterySensor(trap.id, context.coordinator),
-            ]
-        )
+        entities.extend(_create_trap_sensors(context.coordinator, trap))
         _LOGGER.debug(
             "Add %s sensors for trap named '%s' with Victor trap id %d.",
             [f"{type(entity).__name__}" for entity in entities],
@@ -65,323 +59,200 @@ async def async_setup_entry(
     async_add_entities(entities, False)
 
 
-class KillsPresentSensor(VictorSmartKillEntity):
-    """Kills present sensor class."""
+def _create_trap_sensors(coordinator, trap: victor.Trap):
+    return [
+        VictorSmartKillSensor(
+            trap.id,
+            coordinator,
+            VictorSmartKillSensorEntityDescription(
+                key="kills_present",
+                name="kills present",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                icon=ICON_COUNTER,
+                exclude_extra_state_attributes=[ATTR_LATITUDE, ATTR_LONGITUDE],
+                value_func=lambda t: t.trapstatistics.kills_present,
+            ),
+        ),
+        VictorSmartKillSensor(
+            trap.id,
+            coordinator,
+            VictorSmartKillSensorEntityDescription(
+                key="total_kills",
+                name="total kills",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                icon=ICON_COUNTER,
+                exclude_extra_state_attributes=[ATTR_LATITUDE, ATTR_LONGITUDE],
+                value_func=lambda t: t.trapstatistics.total_kills,
+            ),
+        ),
+        VictorSmartKillSensor(
+            trap.id,
+            coordinator,
+            VictorSmartKillSensorEntityDescription(
+                key="total_escapes",
+                name="total escapes",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                icon=ICON_COUNTER,
+                exclude_extra_state_attributes=[
+                    ATTR_LAST_KILL_DATE,
+                    ATTR_LATITUDE,
+                    ATTR_LONGITUDE,
+                ],
+                value_func=lambda t: t.trapstatistics.total_escapes,
+            ),
+        ),
+        VictorSmartKillSensor(
+            trap.id,
+            coordinator,
+            VictorSmartKillSensorEntityDescription(
+                key="total_retreats",
+                name="total retreats",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                icon=ICON_COUNTER,
+                exclude_extra_state_attributes=[
+                    ATTR_LAST_KILL_DATE,
+                    ATTR_LATITUDE,
+                    ATTR_LONGITUDE,
+                ],
+                value_func=lambda t: t.trapstatistics.total_retreats,
+                entity_registry_enabled_default=False,
+            ),
+        ),
+        VictorSmartKillSensor(
+            trap.id,
+            coordinator,
+            VictorSmartKillSensorEntityDescription(
+                key="wireless_network_rssi",
+                name="wireless network rssi",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                exclude_extra_state_attributes=[
+                    ATTR_LAST_KILL_DATE,
+                    ATTR_LATITUDE,
+                    ATTR_LONGITUDE,
+                ],
+                value_func=lambda t: t.trapstatistics.wireless_network_rssi,
+                native_unit_of_measurement=SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+                device_class=SensorDeviceClass.SIGNAL_STRENGTH,
+            ),
+        ),
+        VictorSmartKillSensor(
+            trap.id,
+            coordinator,
+            VictorSmartKillSensorEntityDescription(
+                key="temperature",
+                name="temperature",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                exclude_extra_state_attributes=[
+                    ATTR_LAST_KILL_DATE,
+                    ATTR_LATITUDE,
+                    ATTR_LONGITUDE,
+                ],
+                value_func=lambda t: t.trapstatistics.temperature_celcius,
+                native_unit_of_measurement=TEMP_CELSIUS,
+                device_class=SensorDeviceClass.TEMPERATURE,
+                entity_registry_enabled_default=trap.trapstatistics.temperature
+                is not None,
+            ),
+        ),
+        VictorSmartKillSensor(
+            trap.id,
+            coordinator,
+            VictorSmartKillSensorEntityDescription(
+                key="last_kill_date",
+                name="last kill date",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                exclude_extra_state_attributes=[
+                    ATTR_LAST_KILL_DATE,
+                    ATTR_LATITUDE,
+                    ATTR_LONGITUDE,
+                ],
+                value_func=lambda t: t.trapstatistics.last_kill_date,
+                device_class=SensorDeviceClass.TIMESTAMP,
+            ),
+        ),
+        VictorSmartKillSensor(
+            trap.id,
+            coordinator,
+            VictorSmartKillSensorEntityDescription(
+                key="last_report_date",
+                name="last report date",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                exclude_extra_state_attributes=[
+                    ATTR_LAST_REPORT_DATE,
+                    ATTR_LATITUDE,
+                    ATTR_LONGITUDE,
+                ],
+                value_func=lambda t: t.trapstatistics.last_report_date,
+                device_class=SensorDeviceClass.TIMESTAMP,
+            ),
+        ),
+        VictorSmartKillSensor(
+            trap.id,
+            coordinator,
+            VictorSmartKillSensorEntityDescription(
+                key="battery_level",
+                name="battery level",
+                entity_category=EntityCategory.DIAGNOSTIC,
+                exclude_extra_state_attributes=[
+                    ATTR_LAST_KILL_DATE,
+                    ATTR_BATTERY_LEVEL,
+                    ATTR_LATITUDE,
+                    ATTR_LONGITUDE,
+                ],
+                value_func=lambda t: t.trapstatistics.battery_level,
+                native_unit_of_measurement=PERCENTAGE,
+                device_class=SensorDeviceClass.BATTERY,
+            ),
+        ),
+    ]
+
+
+@dc.dataclass
+class EntityDescriptionRequiredKeysMixin:  # pylint: disable=too-few-public-methods
+    """Mixin for required keys."""
+
+    value_func: Callable[[victor.Trap], StateType]
+
+
+@dc.dataclass
+class VictorSmartKillSensorEntityDescription(
+    SensorEntityDescription, EntityDescriptionRequiredKeysMixin
+):  # pylint: disable=too-few-public-methods
+    """Describes Victor Smart-Kill sensor."""
+
+    exclude_extra_state_attributes: list[str] | None = None
+
+
+class VictorSmartKillSensor(VictorSmartKillEntity, SensorEntity):
+    """Sensor base class."""
+
+    def __init__(
+        self,
+        trap_id: int,
+        coordinator: DataUpdateCoordinator[list[victor.Trap]],
+        description: VictorSmartKillSensorEntityDescription,
+    ) -> None:
+        """Initialize VictorSmartKillSensor."""
+        super().__init__(trap_id, coordinator)
+        self.entity_description = description
 
     @property
     def _exclude_extra_state_attributes(self) -> list[str]:
-        return [ATTR_LATITUDE, ATTR_LONGITUDE]
+        return (
+            self.entity_description.exclude_extra_state_attributes
+            if self.entity_description.exclude_extra_state_attributes
+            else []
+        )
 
     @property
     def _name_suffix(self) -> str:
-        return "kills present"
+        return self.entity_description.name
 
     @property
     def _unique_id_suffix(self) -> str:
-        return "kills_present"
+        return f"{util.slugify(self.entity_description.name)}"
 
     @property
-    def state(self) -> int:
-        """Return the state of the sensor as present kills."""
-        return self.trap.trapstatistics.kills_present
-
-    @property
-    def icon(self) -> str:
-        """Return the icon of the sensor."""
-        return ICON_COUNTER
-
-    @property
-    def entity_category(self) -> EntityCategory:
-        """Return the category of the entity."""
-        return EntityCategory.DIAGNOSTIC
-
-
-class TotalKillsSensor(VictorSmartKillEntity):
-    """Total kills sensor class."""
-
-    @property
-    def _exclude_extra_state_attributes(self) -> list[str]:
-        return [ATTR_LATITUDE, ATTR_LONGITUDE]
-
-    @property
-    def _name_suffix(self) -> str:
-        return "total kills"
-
-    @property
-    def _unique_id_suffix(self) -> str:
-        return "total_kills"
-
-    @property
-    def state(self) -> int | None:
-        """Return the state of the sensor as total kills."""
-        return self.trap.trapstatistics.total_kills
-
-    @property
-    def icon(self) -> str:
-        """Return the icon of the sensor."""
-        return ICON_COUNTER
-
-    @property
-    def entity_category(self) -> EntityCategory:
-        """Return the category of the entity."""
-        return EntityCategory.DIAGNOSTIC
-
-
-class TotalEscapesSensor(VictorSmartKillEntity):
-    """Total escapes sensor class."""
-
-    @property
-    def _exclude_extra_state_attributes(self) -> list[str]:
-        return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
-
-    @property
-    def _name_suffix(self) -> str:
-        return "total escapes"
-
-    @property
-    def _unique_id_suffix(self) -> str:
-        return "total_escapes"
-
-    @property
-    def state(self) -> int | None:
-        """Return the state of the sensor as total escapes."""
-        return self.trap.trapstatistics.total_escapes
-
-    @property
-    def icon(self) -> str:
-        """Return the icon of the sensor."""
-        return ICON_COUNTER
-
-    @property
-    def entity_category(self) -> EntityCategory:
-        """Return the category of the entity."""
-        return EntityCategory.DIAGNOSTIC
-
-
-class TotalRetreatsSensor(VictorSmartKillEntity):
-    """Total retreats sensor class."""
-
-    @property
-    def _exclude_extra_state_attributes(self) -> list[str]:
-        return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
-
-    @property
-    def _name_suffix(self) -> str:
-        return "total retreats"
-
-    @property
-    def _unique_id_suffix(self) -> str:
-        return "total_retreats"
-
-    @property
-    def entity_registry_enabled_default(self) -> bool:
-        """Return if the entity should be enabled when first added to the entity registry."""
-        # temperature is not reported by all versions of traps
-        return False
-
-    @property
-    def state(self) -> int | None:
-        """Return the state of the sensor as total retreats."""
-        return self.trap.trapstatistics.total_retreats
-
-    @property
-    def icon(self) -> str:
-        """Return the icon of the sensor."""
-        return ICON_COUNTER
-
-    @property
-    def entity_category(self) -> EntityCategory:
-        """Return the category of the entity."""
-        return EntityCategory.DIAGNOSTIC
-
-
-class WirelessNetworkRssiSensor(VictorSmartKillEntity):
-    """Wireless network rssi sensor class."""
-
-    @property
-    def _exclude_extra_state_attributes(self) -> list[str]:
-        return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
-
-    @property
-    def _name_suffix(self) -> str:
-        return "wireless network rssi"
-
-    @property
-    def _unique_id_suffix(self) -> str:
-        return "wireless_network_rssi"
-
-    @property
-    def state(self) -> int:
-        """Return the state of the sensor."""
-        return self.trap.trapstatistics.wireless_network_rssi
-
-    @property
-    def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
-        return SIGNAL_STRENGTH_DECIBELS_MILLIWATT
-
-    @property
-    def device_class(self) -> SensorDeviceClass:
-        """Return the class of this sensor."""
-        return SensorDeviceClass.SIGNAL_STRENGTH
-
-    @property
-    def entity_category(self) -> EntityCategory:
-        """Return the category of the entity."""
-        return EntityCategory.DIAGNOSTIC
-
-
-class TemperatureSensor(VictorSmartKillEntity):
-    """Temperature sensor class."""
-
-    @property
-    def _exclude_extra_state_attributes(self) -> list[str]:
-        return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
-
-    @property
-    def _name_suffix(self) -> str:
-        return "temperature"
-
-    @property
-    def _unique_id_suffix(self) -> str:
-        return "temperature"
-
-    @property
-    def entity_registry_enabled_default(self) -> bool:
-        """Return if the entity should be enabled when first added to the entity registry."""
-        # temperature is not reported by all versions of traps
-        return self.state is not None
-
-    @property
-    def state(self) -> float:
-        """Return the state of the sensor."""
-        return self.trap.trapstatistics.temperature_celcius
-
-    @property
-    def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
-        return TEMP_CELSIUS
-
-    @property
-    def device_class(self) -> SensorDeviceClass:
-        """Return the class of this sensor."""
-        return SensorDeviceClass.TEMPERATURE
-
-    @property
-    def entity_category(self) -> EntityCategory:
-        """Return the category of the entity."""
-        return EntityCategory.DIAGNOSTIC
-
-
-class LastKillDateSensor(VictorSmartKillEntity):
-    """Last kill date sensor class."""
-
-    @property
-    def _exclude_extra_state_attributes(self) -> list[str]:
-        return [ATTR_LAST_KILL_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
-
-    @property
-    def _name_suffix(self) -> str:
-        return "last kill date"
-
-    @property
-    def _unique_id_suffix(self) -> str:
-        return "last_kill_date"
-
-    @property
-    def state(self) -> str | None:
-        """Return the state of the sensor."""
-        if self.trap.trapstatistics.last_kill_date:
-            return util.dt.as_local(self.trap.trapstatistics.last_kill_date).isoformat()
-        return None
-
-    @property
-    def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
-        return "ISO8601"
-
-    @property
-    def device_class(self) -> SensorDeviceClass:
-        """Return the class of this sensor."""
-        return SensorDeviceClass.TIMESTAMP
-
-    @property
-    def entity_category(self) -> EntityCategory:
-        """Return the category of the entity."""
-        return EntityCategory.DIAGNOSTIC
-
-
-class LastReportDateSensor(VictorSmartKillEntity):
-    """Last report date sensor class."""
-
-    @property
-    def _exclude_extra_state_attributes(self) -> list[str]:
-        return [ATTR_LAST_REPORT_DATE, ATTR_LATITUDE, ATTR_LONGITUDE]
-
-    @property
-    def _name_suffix(self) -> str:
-        return "last report date"
-
-    @property
-    def _unique_id_suffix(self) -> str:
-        return "last_report_date"
-
-    @property
-    def state(self) -> str | None:
-        """Return the state of the sensor."""
-        if self.trap.trapstatistics.last_report_date:
-            return util.dt.as_local(
-                self.trap.trapstatistics.last_report_date
-            ).isoformat()
-        return None
-
-    @property
-    def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
-        return "ISO8601"
-
-    @property
-    def device_class(self) -> SensorDeviceClass:
-        """Return the class of this sensor."""
-        return SensorDeviceClass.TIMESTAMP
-
-    @property
-    def entity_category(self) -> EntityCategory:
-        """Return the category of the entity."""
-        return EntityCategory.DIAGNOSTIC
-
-
-class BatterySensor(VictorSmartKillEntity):
-    """Battery sensor class."""
-
-    @property
-    def _exclude_extra_state_attributes(self) -> list[str]:
-        return [ATTR_LAST_KILL_DATE, ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE]
-
-    @property
-    def _name_suffix(self) -> str:
-        return "battery level"
-
-    @property
-    def _unique_id_suffix(self) -> str:
-        return "battery_level"
-
-    @property
-    def state(self) -> int:
-        """Return the state of the sensor."""
-        return self.trap.trapstatistics.battery_level
-
-    @property
-    def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
-        return PERCENTAGE
-
-    @property
-    def device_class(self) -> SensorDeviceClass:
-        """Return the class of this sensor."""
-        return SensorDeviceClass.BATTERY
-
-    @property
-    def entity_category(self) -> EntityCategory:
-        """Return the category of the entity."""
-        return EntityCategory.DIAGNOSTIC
+    def native_value(self) -> StateType:
+        """Return the value reported by the sensor."""
+        return self.entity_description.value_func(self.trap)
