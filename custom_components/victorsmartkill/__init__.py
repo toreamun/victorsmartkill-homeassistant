@@ -213,6 +213,7 @@ async def _async_initialize_coordinator(
     # Initialize coordinator with trap data
     await coordinator.async_refresh()
     if not coordinator.last_update_success:
+        await coordinator.async_close()
         raise ConfigEntryNotReady
 
     return coordinator
