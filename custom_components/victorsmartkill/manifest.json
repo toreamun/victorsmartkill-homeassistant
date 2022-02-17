@@ -1,7 +1,7 @@
 {
   "domain": "victorsmartkill",
   "name": "Victor Smart-Kill",
-  "version": "2021.12.1",
+  "version": "2022.2.2",
   "documentation": "https://github.com/toreamun/victorsmartkill-homeassistant",
   "issue_tracker": "https://github.com/toreamun/victorsmartkill-homeassistant/issues",
   "dependencies": [],
@@ -10,7 +10,7 @@
     "@toreamun"
   ],
   "requirements": [
-    "victor-smart-kill==1.0.0"
+    "victor-smart-kill==1.0.1"
   ],
   "iot_class": "cloud_polling"
 }
