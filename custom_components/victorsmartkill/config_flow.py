@@ -166,11 +166,11 @@ class VictorSmartKillOptionsFlowHandler(OptionsFlow):
 
         options = {
             vol.Required(
-                Platform.BINARY_SENSOR,
+                str(Platform.BINARY_SENSOR),
                 default=self.options.get(Platform.BINARY_SENSOR, True),
             ): bool,
             vol.Required(
-                Platform.SENSOR, default=self.options.get(Platform.SENSOR, True)
+                str(Platform.SENSOR), default=self.options.get(Platform.SENSOR, True)
             ): bool,
             vol.Optional(
                 CONF_SCAN_INTERVAL,
