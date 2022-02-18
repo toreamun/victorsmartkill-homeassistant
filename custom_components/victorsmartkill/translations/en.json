@@ -8,13 +8,22 @@
           "username": "Username",
           "password": "Password"
         }
+      },
+      "reauth_confirm": {
+        "title": "Victor Smart-Kill",
+        "description": "Use Victor Pest app username and password.",
+        "data": {
+          "username": "Username",
+          "password": "Password"
+        }
       }
     },
     "error": {
       "auth": "Username and/or password is wrong."
     },
     "abort": {
-      "already_configured": "Account is already configured."
+      "already_configured": "Account is already configured.",
+      "reauth_successful": "Re-authentication was successful."
     }
   },
   "options": {
