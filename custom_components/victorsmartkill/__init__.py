@@ -1,9 +1,4 @@
-"""
-Custom integration to integrate victorsmartkill with Home Assistant.
-
-For more details about this integration, please refer to
-https://github.com/toreamun/victorsmartkill-homeassistant
-"""
+"""Custom integration to integrate victorsmartkill with Home Assistant."""
 from __future__ import annotations
 
 import dataclasses as dc
@@ -19,7 +14,7 @@ from homeassistant.const import (
     Platform,
 )
 from homeassistant.core import CALLBACK_TYPE, Config, callback
-from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.typing import EventType, HomeAssistantType
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 import victor_smart_kill as victor
@@ -57,6 +52,9 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
     if hass.data.get(DOMAIN) is None:
         hass.data.setdefault(DOMAIN, {})
         _LOGGER.info(STARTUP_MESSAGE)
+
+    if not entry.data[CONF_PASSWORD]:
+        raise ConfigEntryAuthFailed("Please re-authenticate")
 
     coordinator = await _async_initialize_coordinator(hass, entry)
     context = IntegrationContext(coordinator=coordinator)
@@ -146,6 +144,8 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
                         },
                     )
             return traps
+        except ConfigEntryAuthFailed:
+            raise
         except Exception as exception:
             raise UpdateFailed(exception) from exception
 
@@ -181,9 +181,14 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
                 sorted(trap.id for trap in traps),
             )
             return traps
-        except Exception:
+        except victor.InvalidCredentialsError as ex:
+            self.logger.debug("Invalid credentials: %s", repr(ex))
+            raise ConfigEntryAuthFailed from ex
+        except Exception as ex:
             self.logger.debug(
-                "Error getting traps from Victor Smart-Kill API.", exc_info=True
+                "Error getting traps from Victor Smart-Kill API: %s",
+                repr(ex),
+                exc_info=True,
             )
             raise
 
