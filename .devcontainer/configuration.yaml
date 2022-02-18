@@ -3,7 +3,7 @@
 automation:
 config:
 frontend:
-
+system_health:
 
 logger:
   default: info
