@@ -13,7 +13,6 @@ from homeassistant.const import (
 from homeassistant.core import callback
 from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
-import httpx
 import victor_smart_kill as victor
 import voluptuous as vol  # type: ignore
 
@@ -38,7 +37,13 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
         """Handle a flow initiated by the user."""
         self._errors = {}
 
-        if user_input is not None:
+        if user_input is None:
+            # defaults
+            user_input = {
+                CONF_USERNAME: None,
+                CONF_PASSWORD: None,
+            }
+        else:
             valid = await self._test_credentials(
                 user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
             )
@@ -49,29 +54,76 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
                 return self.async_create_entry(
                     title=user_input[CONF_USERNAME], data=user_input
                 )
-
             self._errors["base"] = "auth"
-            return await self._show_config_form(user_input)
 
-        return await self._show_config_form(user_input)
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_USERNAME, default=user_input[CONF_USERNAME]): str,
+                    vol.Required(CONF_PASSWORD, default=user_input[CONF_PASSWORD]): str,
+                }
+            ),
+            errors=self._errors,
+        )
+
+    async def async_step_reauth(self, user_input=None):
+        """Perform reauth upon an API authentication error."""
+        user_input_copy = dict(user_input)
+        if user_input and user_input[CONF_PASSWORD]:
+            # remove password to stop re-auth in async_setup_entry
+            user_input_copy = dict(user_input)
+            user_input_copy[CONF_PASSWORD] = None
+            config_entry = self.hass.config_entries.async_get_entry(
+                self.context["entry_id"]
+            )
+            self.hass.config_entries.async_update_entry(
+                config_entry, data=user_input_copy
+            )
+
+        return await self.async_step_reauth_confirm(user_input_copy)
+
+    async def async_step_reauth_confirm(self, user_input=None):
+        """Dialog that informs the user that reauth is required."""
+        if user_input is None:
+            config_entry = self.hass.config_entries.async_get_entry(
+                self.context["entry_id"]
+            )
+            user_input = dict(config_entry.data)
+        else:
+            if user_input.get(CONF_PASSWORD):
+                valid = await self._test_credentials(
+                    user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
+                )
+                if valid:
+                    config_entry = self.hass.config_entries.async_get_entry(
+                        self.context["entry_id"]
+                    )
+                    data = {
+                        **config_entry.data,
+                        CONF_USERNAME: user_input[CONF_USERNAME],
+                        CONF_PASSWORD: user_input[CONF_PASSWORD],
+                    }
+                    self.hass.config_entries.async_update_entry(config_entry, data=data)
+                    await self.hass.config_entries.async_reload(config_entry.entry_id)
+                    return self.async_abort(reason="reauth_successful")
+
+        return self.async_show_form(
+            step_id="reauth_confirm",
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_USERNAME, default=user_input[CONF_USERNAME]): str,
+                    vol.Required(CONF_PASSWORD, default=user_input[CONF_PASSWORD]): str,
+                }
+            ),
+            errors=self._errors,
+        )
 
     @staticmethod
     @callback
     def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
         """Get the options flow for this handler."""
         return VictorSmartKillOptionsFlowHandler(config_entry)
-
-    async def _show_config_form(
-        self, user_input  # pylint: disable=unused-argument
-    ) -> FlowResult:
-        """Show the configuration form to edit location data."""
-        return self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema(
-                {vol.Required(CONF_USERNAME): str, vol.Required(CONF_PASSWORD): str}
-            ),
-            errors=self._errors,
-        )
 
     async def _test_credentials(self, username, password):
         """Return true if credentials is valid."""
@@ -81,21 +133,15 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
                     "Fetch API-token to test for correct username and password.",
                 )
                 await client.fetch_token()
-        except httpx.HTTPStatusError as ex:
-            if ex.response.status_code == 400 or ex.response.status_code == 401:
-                _LOGGER.debug(
-                    "HTTP status %d: %s", ex.response.status_code, ex.response.text
-                )
-                return False
-            raise
+                return True
+        except victor.InvalidCredentialsError:
+            return False
         except Exception:
             _LOGGER.debug(
                 "Unexpected error from Victor Smart-Kill API when fetching API-token.",
                 exc_info=True,
             )
             raise
-
-        return True
 
 
 class VictorSmartKillOptionsFlowHandler(OptionsFlow):

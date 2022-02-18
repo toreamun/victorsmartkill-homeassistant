@@ -8,13 +8,22 @@
           "username": "Brukernavn",
           "password": "Passord"
         }
+      },
+      "reauth_confirm": {
+        "title": "Victor Smart-Kill",
+        "description": "Benytt Victor Pest app brukernavn og passord.",
+        "data": {
+          "username": "Brukernavn",
+          "password": "Passord"
+        }
       }
     },
     "error": {
       "auth": "Brukernavn og/eller passord er feil."
     },
     "abort": {
-      "already_configured": "Konto er allerede konfigurert."
+      "already_configured": "Konto er allerede konfigurert.",
+      "reauth_successful": "Re-autentisering var vellykket."
     }
   },
   "options": {
