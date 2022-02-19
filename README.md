@@ -30,7 +30,7 @@ The easiest way to add the integration to your Homeassistant installation is usi
 
 You need some kind of terminal to use this method. You can use one of the SSH add-ons from the [Add-on Store](https://my.home-assistant.io/redirect/_change/?redirect=supervisor_store%2) if you run HassOS. 
 
-1. Open terminal. Change directory to your Home Assistant configuration directory if you are not using HassOS (where you find `configuration.yaml`).
+1. Open terminal. Change directory to your Home Assistant configuration directory (where you find `configuration.yaml`) if you are not using HassOS.
 2. Run this script
 
 ```
