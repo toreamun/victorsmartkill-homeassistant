@@ -1,6 +1,6 @@
 # Victor Smart-Kill
 
-Home Assistant integration for Victor Smart-Kill WI-FI electronic mouse and rat traps from [VictorPest.com].
+Home Assistant integration for Victor Smart-Kill WI-FI electronic mouse and rat traps from [VictorPest.com]. This integration is open source and not made by VictorPest.com.
 
 <img src="https://play-lh.googleusercontent.com/tfSd-O7Qwc8p8kYzTbJlDlq-nZzUyRHCMEvM87155kTtwEpVP7iNMgNzg2gWujjZ0jmq=s360-rw" width="128" alt="Victor logo">
 
@@ -47,6 +47,12 @@ rm victorsmartkill.zip
 - Place the files you downloaded in the new directory (folder) you created.
 - Restart Home Assistant
 - In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Victor Smart-Kill"
+
+# Trap models and versions
+This integration should work with traps that use the VictorPest app. Please create an [issue](https://github.com/toreamun/victorsmartkill-homeassistant/issues/new/choose) if you have trouble with your trap.
+
+It is very helpfull if you can check the [list of models](https://github.com/toreamun/victorsmartkill-homeassistant/wiki/Hardware) and update the list if you have an unlisted trap or version.
+
 
 
 [victorpest.com]: https://www.victorpest.com/
