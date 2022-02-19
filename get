@@ -1,6 +1,6 @@
 #!/bin/bash
 # Originally from https://get.hacs.xyz and chaed to fit victorsmartkill integration
-# wget -O - https://github.com/toreamun/victorsmartkill-homeassistant/get | bash -
+# wget -O - https://raw.githubusercontent.com/toreamun/victorsmartkill-homeassistant/master/get | bash -
 set -e
 
 RED_COLOR='\033[0;31m'
