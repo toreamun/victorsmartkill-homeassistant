@@ -16,7 +16,8 @@ Home Assistant integration for Victor Smart-Kill WI-FI electronic mouse and rat 
 
 ## HACS installation
 
-The easiest way to add this to your Homeassistant installation is using [HACS]. Once installed from HACS UI, go to Configuration -> Integrations and click the + to select Victor Smart-Kill and add the new integration.
+The easiest way to add this to your Homeassistant installation is using [HACS]. Once installed from HACS UI and Home Assistant has been restarted, go to Configuration -> Integrations (http://homeassistant.local:8123/config/integrations) and click the + to select Victor Smart-Kill and add the new integration. You  may have to clear your browser cache or perform hard-refresh if the integrations is missing from the list.
+
 
 ## Manual installation
 
@@ -42,7 +43,7 @@ rm victorsmartkill.zip
 ```
 
 - Restart Home Assistant
-- Tøm nettleseren sin cache. Hvis du ikke gjør dette risikerer du å ikke finne integrasjonen i listen av tilgjengelige integrasjoner.
+- Before the integration can show up in the list of integrations, you need to clear your browser cache or perform hard-refresh.
 
 - Place the files you downloaded in the new directory (folder) you created.
 - Restart Home Assistant
