@@ -12,9 +12,8 @@ Home Assistant integration for Victor Smart-Kill WI-FI electronic mouse and rat 
 ![Project Maintenance][maintenance-shield]
 [![BuyMeCoffee][buymecoffeebadge]][buymecoffee]
 
-![image-m1](https://user-images.githubusercontent.com/12134766/154821513-3cd6d205-c66e-4b72-b2b5-b707622dfccb.png)
-![image-m2](https://user-images.githubusercontent.com/12134766/154821487-3482652a-6988-41a4-b38a-582fcd992408.png)
-
+![image-m1-mouse-trap](https://user-images.githubusercontent.com/12134766/154821889-45f78843-bcd3-4d67-844a-5767fb0709b4.png)
+![image-m2-rat-trap](https://user-images.githubusercontent.com/12134766/154821879-3a3fffeb-964d-4a06-9b65-866c8e4cfb6a.png)
 
 ![example][exampleimg]
 
