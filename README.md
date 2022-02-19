@@ -14,40 +14,61 @@ Home Assistant integration for Victor Smart-Kill WI-FI electronic mouse and rat 
 
 ![example][exampleimg]
 
-## HACS installation
+## Dowload the integration
+### HACS download (alternative 1)
 
-The easiest way to add this to your Homeassistant installation is using [HACS]. Once installed from HACS UI and Home Assistant has been restarted, go to Configuration -> Integrations (http://homeassistant.local:8123/config/integrations) and click the + to select Victor Smart-Kill and add the new integration. You  may have to clear your browser cache or perform hard-refresh if the integrations is missing from the list.
+The easiest way to add the integration to your Homeassistant installation is using [HACS]. I you have HACS installed:
+1. Goto HACS -> integrations (http://homeassistant.local:8123/hacs/integrations) and select "explore and download repositories".
+2. Search for Victor Smart-Kill, and select to download the repository.
+3. Restart Home Assistant (http://homeassistant.local:8123/config/server_control and select restart).
 
 
-## Manual installation
+### Script download (alternative 2)
 
-- Using the tool of choice open the directory (folder) for your HA configuration (where you find `configuration.yaml`).
-- If you do not have a `custom_components` directory (folder) there, you need to create it.
-- Change dircetory to `custom_components`.
-- Download lastest version 
+You need some kind of terminal to use this method. You can use one of the SSH add-ons from the [Add-on Store](https://my.home-assistant.io/redirect/_change/?redirect=supervisor_store%2) if you run HassOS. 
+
+1. Open terminal. Change directory to your Home Assistant configuration directory if you are not using HassOS (where you find `configuration.yaml`).
+2. Run this script
+
+```
+wget -O - https://raw.githubusercontent.com/toreamun/victorsmartkill-homeassistant/master/get | bash -
+```
+
+3. Restart Home Assistant (http://homeassistant.local:8123/config/server_control and select restart)
+4. Before the integration can show up in the list of integrations, you need to clear your browser cache or perform hard-refresh.
+
+### Manual download (alternative 3)
+
+You need some kind of terminal to use this method. You can use one of the SSH add-ons from the Add-on Store if you run HassOS.
+
+1. Open terminal and change to the directory for your HA configuration (where you find `configuration.yaml`).
+2. If you do not have a `custom_components` directory there, you need to create it.
+3. Change dircetory to `custom_components`.
+4. Download lastest version 
 
 ```
 wget https://github.com/toreamun/victorsmartkill-homeassistant/releases/latest/download/victorsmartkill.zip
 ```
 
-- Unzip victorsmartkill.zip into folder victorsmartkill
+5. Unzip victorsmartkill.zip into folder victorsmartkill
 
 ```
 unzip victorsmartkill.zip -d victorsmartkill       
 ```
 
-- Delete victorsmartkill.zip
+6. Delete victorsmartkill.zip
 
 ```
 rm victorsmartkill.zip
 ```
 
-- Restart Home Assistant
-- Before the integration can show up in the list of integrations, you need to clear your browser cache or perform hard-refresh.
+7. Restart Home Assistant (http://homeassistant.local:8123/config/server_control and select restart)
+8. Before the integration can show up in the list of integrations, you need to clear your browser cache or perform hard-refresh.
 
-- Place the files you downloaded in the new directory (folder) you created.
-- Restart Home Assistant
-- In the HA UI go to "Configuration" -> "Integrations" click "+" and search for "Victor Smart-Kill"
+## Install the integration
+
+Once the integration has been downloaded and Home Assistant has been restarted, go to Configuration -> Integrations (http://homeassistant.local:8123/config/integrations) and click the + to select Victor Smart-Kill and add the new integration. **You  may have to clear your browser cache or perform hard-refresh if the integrations is missing from the list.** Check the [log](http://homeassistant.local:8123/config/logs) if you still have problems.
+
 
 # Trap models and versions
 This integration should work with traps that use the VictorPest app. Please create an [issue](https://github.com/toreamun/victorsmartkill-homeassistant/issues/new/choose) if you have trouble with your trap.
