@@ -74,9 +74,9 @@ Once the integration has been downloaded and Home Assistant has been restarted, 
 
 
 # Trap models and versions
-This integration should work with traps that use the VictorPest app. Please create an [issue](https://github.com/toreamun/victorsmartkill-homeassistant/issues/new/choose) if you have trouble with your trap.
+This integration should work with traps that has been provisioned with the VictorPest app. Please create an [issue](https://github.com/toreamun/victorsmartkill-homeassistant/issues/new/choose) if you have trouble with your trap. Please see the wiki if you are interested in details about the [hardware](https://github.com/toreamun/victorsmartkill-homeassistant/wiki/Hardware).
 
-It is very helpfull if you can check the [list of models](https://github.com/toreamun/victorsmartkill-homeassistant/wiki/Hardware) and update the list if you have an unlisted trap or version.
+It is very helpfull if you can check the [list of models](https://github.com/toreamun/victorsmartkill-homeassistant/wiki/Hardware#list-of-known-traps-versions) and update the list if you have an unlisted trap or version.
 
 
 
