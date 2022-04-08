@@ -9,7 +9,6 @@
         }
       },
       "reauth_confirm": {
-        "title": "Victor Smart-Kill",
         "description": "Use Victor Pest app username and password.",
         "data": {
           "username": "Username",
