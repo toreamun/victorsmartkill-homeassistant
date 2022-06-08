@@ -1,9 +1,5 @@
 {
   "name": "Victor Smart-Kill",
-  "domains": [
-    "binary_sensor",
-    "sensor"
-  ],
   "homeassistant": "2022.2.0",
   "render_readme": true
 }
