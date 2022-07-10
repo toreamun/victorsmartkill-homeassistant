@@ -4,7 +4,7 @@ from __future__ import annotations
 import dataclasses as dc
 import datetime as dt
 import logging
-from typing import Callable
+from typing import Any, Callable
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -151,11 +151,11 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
 
     @callback
     def async_add_listener(
-        self, update_callback: Callable[[], None]
+        self, update_callback: CALLBACK_TYPE, context: Any = None
     ) -> Callable[[], None]:
         """Listen for data updates. Called by CoordinatorEntity."""
         # Overrided to add debug logging
-        remove_listener_callback = super().async_add_listener(update_callback)
+        remove_listener_callback = super().async_add_listener(update_callback, context)
         self.logger.debug("Listener %s added to coordinator.", update_callback.__name__)
         return remove_listener_callback
 
