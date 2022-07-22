@@ -60,7 +60,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
     context = IntegrationContext(coordinator=coordinator)
     hass.data[DOMAIN][entry.entry_id] = context
 
-    hass.config_entries.async_setup_platforms(entry, coordinator.platforms)
+    await hass.config_entries.async_forward_entry_setups(entry, coordinator.platforms)
 
     _setup_reload(hass, entry, context)
 
