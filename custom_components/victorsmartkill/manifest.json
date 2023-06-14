@@ -1,16 +1,16 @@
 {
   "domain": "victorsmartkill",
   "name": "Victor Smart-Kill",
-  "version": "2023.1.0",
-  "documentation": "https://github.com/toreamun/victorsmartkill-homeassistant",
-  "issue_tracker": "https://github.com/toreamun/victorsmartkill-homeassistant/issues",
-  "dependencies": [],
-  "config_flow": true,
   "codeowners": [
     "@toreamun"
   ],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/toreamun/victorsmartkill-homeassistant",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/toreamun/victorsmartkill-homeassistant/issues",
   "requirements": [
     "victor-smart-kill==1.1.1"
   ],
-  "iot_class": "cloud_polling"
+  "version": "2023.1.0"
 }
