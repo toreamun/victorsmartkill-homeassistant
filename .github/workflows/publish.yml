@@ -2,9 +2,11 @@ name: Publish
 
 on:
   release:
-    types: [published]
+    types:
+      - published
   push:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   release_zip_file:
@@ -12,28 +14,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v4
       - name: Upload zip to action
-        uses: actions/upload-artifact@v2
-        if: ${{ github.event_name == 'push' }}
+        uses: actions/upload-artifact@v4
+        if: '${{ github.event_name == "push" }}'
         with:
           name: victorsmartkill
-          path: ${{ github.workspace }}/custom_components/victorsmartkill
-
-      # Pack the victorsmartkill directory as a zip and upload to the release
+          path: '${{ github.workspace }}/custom_components/victorsmartkill'
       - name: ZIP victorsmartkill directory
-        if: ${{ github.event_name == 'release' }}
+        if: '${{ github.event_name == "release" }}'
         run: |
           cd ${{ github.workspace }}/custom_components/victorsmartkill
           zip victorsmartkill.zip -r ./
-
       - name: Upload zip to release
-        uses: svenstaro/upload-release-action@v1-release
-        if: ${{ github.event_name == 'release' }}
+        uses: svenstaro/upload-release-action@v2
+        if: '${{ github.event_name == "release" }}'
         with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: ${{ github.workspace }}/custom_components/victorsmartkill/victorsmartkill.zip
+          repo_token: '${{ secrets.GITHUB_TOKEN }}'
+          file: '${{ github.workspace }}/custom_components/victorsmartkill/victorsmartkill.zip'
           asset_name: victorsmartkill.zip
-          tag: ${{ github.ref }}
+          tag: '${{ github.ref }}'
           overwrite: true
