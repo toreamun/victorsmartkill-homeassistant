@@ -18,7 +18,7 @@ from homeassistant.const import (
     ATTR_LONGITUDE,
     PERCENTAGE,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-    TEMP_CELSIUS,
+    UnitOfTemperature,
 )
 from homeassistant.helpers.entity import Entity, EntityCategory
 from homeassistant.helpers.typing import HomeAssistantType, StateType
@@ -148,7 +148,7 @@ def _create_trap_sensors(coordinator, trap: victor.Trap):
                     ATTR_LONGITUDE,
                 ],
                 value_func=lambda t: t.trapstatistics.temperature_celcius,
-                native_unit_of_measurement=TEMP_CELSIUS,
+                native_unit_of_measurement=UnitOfTemperature.CELSIUS,
                 device_class=SensorDeviceClass.TEMPERATURE,
                 entity_registry_enabled_default=trap.trapstatistics.temperature
                 is not None,
