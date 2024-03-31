@@ -1,7 +1,7 @@
 name: Pull actions
 
 on:
-  pull_request: null
+  pull_request:
 
 jobs:
   validate:
@@ -9,21 +9,27 @@ jobs:
     name: Validate
     steps:
       - uses: actions/checkout@v4
+
       - name: HACS validation
         uses: hacs/action@main
         with:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CATEGORY: integration
+
       - name: Hassfest validation
         uses: home-assistant/actions/hassfest@master
+
   style:
     runs-on: ubuntu-latest
     name: Check style formatting
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: "pip"
+          python-version: 3.12
+          cache: pip
+
       - run: pip install black
+
       - run: black .
