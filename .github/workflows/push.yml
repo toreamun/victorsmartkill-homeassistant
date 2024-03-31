@@ -8,7 +8,7 @@ on:
 
 jobs:
   validate:
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     name: Validate
     steps:
       - uses: actions/checkout@v4
@@ -23,13 +23,16 @@ jobs:
         uses: home-assistant/actions/hassfest@master
 
   style:
-    runs-on: "ubuntu-latest"
+    runs-on: ubuntu-latest
     name: Check style formatting
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-          cache: "pip"
+          python-version: 3.12
+          cache: pip
+
       - run: pip install black
+
       - run: black .
