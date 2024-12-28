@@ -99,10 +99,10 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
         update_interval: dt.timedelta,
         username: str,
         password: str,
-        platforms: list[str],
+        platforms: list[Platform],
     ) -> None:
         """Initialize."""
-        self.platforms: list[str] = platforms
+        self.platforms: list[Platform] = platforms
         self._client = victor.VictorAsyncClient(username, password)
         self._api = victor.VictorApi(self._client)
         self._close = False
