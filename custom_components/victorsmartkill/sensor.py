@@ -12,7 +12,6 @@ from homeassistant.components.sensor import (
     SensorEntity,
     SensorEntityDescription,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
     ATTR_LATITUDE,
@@ -27,7 +26,10 @@ from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 import victor_smart_kill as victor
 
-from custom_components.victorsmartkill import IntegrationContext
+from custom_components.victorsmartkill import (
+    IntegrationContext,
+    VictorSmartKillConfigEntry,
+)
 from custom_components.victorsmartkill.const import (
     ATTR_LAST_KILL_DATE,
     ATTR_LAST_REPORT_DATE,
@@ -41,11 +43,11 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: VictorSmartKillConfigEntry,
     async_add_entities: Callable[[Iterable[Entity], bool | None], None],
 ) -> None:
     """Set up sensor platform."""
-    context: IntegrationContext = hass.data[DOMAIN][entry.entry_id]
+    context: IntegrationContext = entry.runtime_data
     traps: list[victor.Trap] = context.coordinator.data
 
     entities = []

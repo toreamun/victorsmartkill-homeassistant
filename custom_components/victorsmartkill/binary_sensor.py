@@ -9,12 +9,14 @@ from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
 )
-from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity import Entity
 from homeassistant.core import HomeAssistant
 import victor_smart_kill as victor
 
-from custom_components.victorsmartkill import IntegrationContext
+from custom_components.victorsmartkill import (
+    IntegrationContext,
+    VictorSmartKillConfigEntry,
+)
 from custom_components.victorsmartkill.const import (
     ATTR_LAST_KILL_DATE,
     DOMAIN,
@@ -27,11 +29,11 @@ _LOGGER = logging.getLogger(__name__)
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
+    entry: VictorSmartKillConfigEntry,
     async_add_entities: Callable[[Iterable[Entity], bool | None], None],
 ) -> None:
     """Set up binary_sensor platform."""
-    context: IntegrationContext = hass.data[DOMAIN][entry.entry_id]
+    context: IntegrationContext = entry.runtime_data
     traps: list[victor.Trap] = context.coordinator.data
 
     entities = []
