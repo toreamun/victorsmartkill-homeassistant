@@ -1,4 +1,5 @@
 """Sensor platform for victorsmartkill."""
+
 from __future__ import annotations
 
 import dataclasses as dc
@@ -20,8 +21,9 @@ from homeassistant.const import (
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
     UnitOfTemperature,
 )
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import Entity, EntityCategory
-from homeassistant.helpers.typing import HomeAssistantType, StateType
+from homeassistant.helpers.typing import StateType
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 import victor_smart_kill as victor
 
@@ -38,7 +40,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistantType,
+    hass: HomeAssistant,
     entry: ConfigEntry,
     async_add_entities: Callable[[Iterable[Entity], bool | None], None],
 ) -> None:

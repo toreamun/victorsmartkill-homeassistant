@@ -1,4 +1,5 @@
 """Custom integration to integrate victorsmartkill with Home Assistant."""
+
 from __future__ import annotations
 
 import dataclasses as dc
@@ -13,9 +14,8 @@ from homeassistant.const import (
     CONF_USERNAME,
     Platform,
 )
-from homeassistant.core import CALLBACK_TYPE, Config, callback
+from homeassistant.core import CALLBACK_TYPE, Config, callback, Event, HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
-from homeassistant.helpers.typing import EventType, HomeAssistantType
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 import victor_smart_kill as victor
 
@@ -39,13 +39,13 @@ class IntegrationContext:
     unsubscribe_list: list[CALLBACK_TYPE] = dc.field(default_factory=list)
 
 
-async def async_setup(hass: HomeAssistantType, config: Config) -> bool:
+async def async_setup(hass: HomeAssistant, config: Config) -> bool:
     """Set up this integration using YAML is not supported."""
     # pylint: disable=unused-argument
     return True
 
 
-async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool:
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     _LOGGER.debug("async_setup_entry %s.", entry.title)
 
@@ -67,7 +67,7 @@ async def async_setup_entry(hass: HomeAssistantType, entry: ConfigEntry) -> bool
     return True
 
 
-async def async_unload_entry(hass: HomeAssistantType, entry: ConfigEntry):
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Handle removal of an entry."""
     _LOGGER.debug("async_unload_entry %s.", entry.title)
 
@@ -90,7 +90,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
 
     def __init__(
         self,
-        hass: HomeAssistantType,
+        hass: HomeAssistant,
         logger: logging.Logger,
         update_interval: dt.timedelta,
         username: str,
@@ -194,7 +194,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
 
 
 async def _async_initialize_coordinator(
-    hass: HomeAssistantType, entry: ConfigEntry
+    hass: HomeAssistant, entry: ConfigEntry
 ) -> VictorSmartKillDataUpdateCoordinator:
     username = entry.data.get(CONF_USERNAME)
     password = entry.data.get(CONF_PASSWORD)
@@ -225,14 +225,12 @@ async def _async_initialize_coordinator(
 
 
 @callback
-async def _async_config_entry_changed(hass: HomeAssistantType, entry: ConfigEntry):
+async def _async_config_entry_changed(hass: HomeAssistant, entry: ConfigEntry):
     _LOGGER.info("Config entry has change. Reload integration.")
     await hass.config_entries.async_reload(entry.entry_id)
 
 
-def _setup_reload(
-    hass: HomeAssistantType, entry: ConfigEntry, context: IntegrationContext
-):
+def _setup_reload(hass: HomeAssistant, entry: ConfigEntry, context: IntegrationContext):
     """Set up listeners of reload triggers."""
     # Listen for config entry changes and reload when changed.
     context.unsubscribe_list.append(
@@ -240,7 +238,7 @@ def _setup_reload(
     )
 
     @callback
-    async def async_trap_list_changed(event: EventType):
+    async def async_trap_list_changed(event: Event):
         _LOGGER.info("Trap list hast changed (%s). Reload integration.", event.data)
         await hass.config_entries.async_reload(entry.entry_id)
 

@@ -1,4 +1,5 @@
 """Binary sensor platform for Victor Smart-Kill."""
+
 from __future__ import annotations
 
 import logging
@@ -10,7 +11,7 @@ from homeassistant.components.binary_sensor import (
 )
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.typing import HomeAssistantType
+from homeassistant.core import HomeAssistant
 import victor_smart_kill as victor
 
 from custom_components.victorsmartkill import IntegrationContext
@@ -25,7 +26,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistantType,
+    hass: HomeAssistant,
     entry: ConfigEntry,
     async_add_entities: Callable[[Iterable[Entity], bool | None], None],
 ) -> None:
