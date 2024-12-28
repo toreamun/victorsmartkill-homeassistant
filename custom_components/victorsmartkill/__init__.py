@@ -15,7 +15,8 @@ from homeassistant.const import (
     CONF_USERNAME,
     Platform,
 )
-from homeassistant.core import CALLBACK_TYPE, Config, callback, Event, HomeAssistant
+from homeassistant.core import CALLBACK_TYPE, callback, Event, HomeAssistant
+from homeassistant.helpers.typing import ConfigType
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 import victor_smart_kill as victor
@@ -42,7 +43,7 @@ class IntegrationContext:
     unsubscribe_list: list[CALLBACK_TYPE] = dc.field(default_factory=list)
 
 
-async def async_setup(hass: HomeAssistant, config: Config) -> bool:
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up this integration using YAML is not supported."""
     # pylint: disable=unused-argument
     return True
