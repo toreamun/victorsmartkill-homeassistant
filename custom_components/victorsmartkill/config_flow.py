@@ -1,9 +1,10 @@
 """Adds config flow for Victor Smart-Kill."""
+
 from __future__ import annotations
 
 import logging
 
-from homeassistant.config_entries import ConfigEntry, ConfigFlow, OptionsFlow
+from homeassistant.config_entries import ConfigFlow, OptionsFlow
 from homeassistant.const import (
     CONF_PASSWORD,
     CONF_SCAN_INTERVAL,
@@ -15,6 +16,8 @@ from homeassistant.data_entry_flow import FlowResult
 import homeassistant.helpers.config_validation as cv
 import victor_smart_kill as victor
 import voluptuous as vol  # type: ignore
+
+from custom_components.victorsmartkill import VictorSmartKillConfigEntry
 
 from custom_components.victorsmartkill.const import (  # pylint: disable=unused-import
     DEFAULT_UPDATE_INTERVAL_MINUTES,
@@ -121,7 +124,7 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
 
     @staticmethod
     @callback
-    def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
+    def async_get_options_flow(config_entry: VictorSmartKillConfigEntry) -> OptionsFlow:
         """Get the options flow for this handler."""
         return VictorSmartKillOptionsFlowHandler(config_entry)
 
@@ -147,13 +150,14 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
 class VictorSmartKillOptionsFlowHandler(OptionsFlow):
     """Victor Smart-Kill config flow options handler."""
 
-    def __init__(self, config_entry: ConfigEntry):
+    def __init__(self, config_entry: VictorSmartKillConfigEntry):
         """Initialize HACS options flow."""
         self.config_entry = config_entry
         self.options = dict(config_entry.options)
 
     async def async_step_init(
-        self, user_input=None  # pylint: disable=unused-argument
+        self,
+        user_input=None,  # pylint: disable=unused-argument
     ) -> FlowResult:
         """Manage the options."""
         return await self.async_step_user()
