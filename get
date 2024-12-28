@@ -1,5 +1,5 @@
 #!/bin/bash
-# Originally from https://get.hacs.xyz and chaed to fit victorsmartkill integration
+# Originally from https://get.hacs.xyz and changed to fit victorsmartkill integration
 # wget -O - https://raw.githubusercontent.com/toreamun/victorsmartkill-homeassistant/master/get | bash -
 set -e
 
