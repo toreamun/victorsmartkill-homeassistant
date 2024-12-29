@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import dataclasses as dc
 import logging
-from typing import Callable, Iterable
+from typing import TYPE_CHECKING
 
 from homeassistant import util
 from homeassistant.components.sensor import (
@@ -18,25 +18,30 @@ from homeassistant.const import (
     ATTR_LONGITUDE,
     PERCENTAGE,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
+    EntityCategory,
     UnitOfTemperature,
 )
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity import Entity, EntityCategory
-from homeassistant.helpers.typing import StateType
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-import victor_smart_kill as victor
 
-from custom_components.victorsmartkill import (
-    IntegrationContext,
-    VictorSmartKillConfigEntry,
-)
 from custom_components.victorsmartkill.const import (
     ATTR_LAST_KILL_DATE,
     ATTR_LAST_REPORT_DATE,
-    DOMAIN,
     ICON_COUNTER,
 )
 from custom_components.victorsmartkill.entity import VictorSmartKillEntity
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
+
+    import victor_smart_kill as victor
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity import Entity
+    from homeassistant.helpers.typing import StateType
+    from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+
+    from custom_components.victorsmartkill import (
+        IntegrationContext,
+        VictorSmartKillConfigEntry,
+    )
 
 _LOGGER = logging.getLogger(__name__)
 

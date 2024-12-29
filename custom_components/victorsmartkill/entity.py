@@ -2,19 +2,18 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 import logging
-from typing import Any
+from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING, Any
 
 from homeassistant import util
 from homeassistant.const import ATTR_BATTERY_LEVEL, ATTR_LATITUDE, ATTR_LONGITUDE
 from homeassistant.core import callback
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.update_coordinator import (
     CoordinatorEntity,
     DataUpdateCoordinator,
 )
-import victor_smart_kill as victor
 
 from custom_components.victorsmartkill.const import (
     ATTR_LAST_KILL_DATE,
@@ -23,6 +22,9 @@ from custom_components.victorsmartkill.const import (
     DOMAIN,
     MANUFACTURER,
 )
+
+if TYPE_CHECKING:
+    import victor_smart_kill as victor
 
 _LOGGER = logging.getLogger(__name__)
 

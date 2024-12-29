@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 
+import homeassistant.helpers.config_validation as cv
+import victor_smart_kill as victor
+import voluptuous as vol  # type: ignore
 from homeassistant.config_entries import ConfigFlow, OptionsFlow
 from homeassistant.const import (
     CONF_PASSWORD,
@@ -12,17 +16,16 @@ from homeassistant.const import (
     Platform,
 )
 from homeassistant.core import callback
-from homeassistant.data_entry_flow import FlowResult
-import homeassistant.helpers.config_validation as cv
-import victor_smart_kill as victor
-import voluptuous as vol  # type: ignore
-
-from custom_components.victorsmartkill import VictorSmartKillConfigEntry
 
 from custom_components.victorsmartkill.const import (  # pylint: disable=unused-import
     DEFAULT_UPDATE_INTERVAL_MINUTES,
     DOMAIN,
 )
+
+if TYPE_CHECKING:
+    from homeassistant.data_entry_flow import FlowResult
+
+    from custom_components.victorsmartkill import VictorSmartKillConfigEntry
 
 _LOGGER = logging.getLogger(__name__)
 

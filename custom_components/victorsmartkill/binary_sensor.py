@@ -3,26 +3,30 @@
 from __future__ import annotations
 
 import logging
-from typing import Callable, Iterable
+from typing import TYPE_CHECKING
 
 from homeassistant.components.binary_sensor import (
     BinarySensorDeviceClass,
     BinarySensorEntity,
 )
-from homeassistant.helpers.entity import Entity
-from homeassistant.core import HomeAssistant
-import victor_smart_kill as victor
 
-from custom_components.victorsmartkill import (
-    IntegrationContext,
-    VictorSmartKillConfigEntry,
-)
 from custom_components.victorsmartkill.const import (
     ATTR_LAST_KILL_DATE,
-    DOMAIN,
     ICON_CAPTURED,
 )
 from custom_components.victorsmartkill.entity import VictorSmartKillEntity
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
+
+    import victor_smart_kill as victor
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity import Entity
+
+    from custom_components.victorsmartkill import (
+        IntegrationContext,
+        VictorSmartKillConfigEntry,
+    )
 
 _LOGGER = logging.getLogger(__name__)
 
