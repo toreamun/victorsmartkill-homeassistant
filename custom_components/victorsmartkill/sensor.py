@@ -30,26 +30,27 @@ from custom_components.victorsmartkill.const import (
 from custom_components.victorsmartkill.entity import VictorSmartKillEntity
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable
+    from collections.abc import Callable
+    from datetime import datetime
 
     import victor_smart_kill as victor
     from homeassistant.core import HomeAssistant
-    from homeassistant.helpers.entity import Entity
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
     from homeassistant.helpers.typing import StateType
-    from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
     from custom_components.victorsmartkill import (
         IntegrationContext,
         VictorSmartKillConfigEntry,
+        VictorSmartKillDataUpdateCoordinator,
     )
 
 _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
+    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
     entry: VictorSmartKillConfigEntry,
-    async_add_entities: Callable[[Iterable[Entity], bool | None], None],
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up sensor platform."""
     context: IntegrationContext = entry.runtime_data
@@ -65,10 +66,12 @@ async def async_setup_entry(
             trap.id,
         )
 
-    async_add_entities(entities, False)
+    async_add_entities(entities, update_before_add=False)
 
 
-def _create_trap_sensors(coordinator, trap: victor.Trap):
+def _create_trap_sensors(
+    coordinator: VictorSmartKillDataUpdateCoordinator, trap: victor.Trap
+) -> list[VictorSmartKillSensor]:
     return [
         VictorSmartKillSensor(
             trap.id,
@@ -216,14 +219,14 @@ def _create_trap_sensors(coordinator, trap: victor.Trap):
     ]
 
 
-@dc.dataclass
+@dc.dataclass(frozen=True)
 class EntityDescriptionRequiredKeysMixin:  # pylint: disable=too-few-public-methods
     """Mixin for required keys."""
 
-    value_func: Callable[[victor.Trap], StateType]
+    value_func: Callable[[victor.Trap], StateType | datetime]
 
 
-@dc.dataclass
+@dc.dataclass(frozen=True)
 class VictorSmartKillSensorEntityDescription(
     SensorEntityDescription, EntityDescriptionRequiredKeysMixin
 ):  # pylint: disable=too-few-public-methods
@@ -238,12 +241,12 @@ class VictorSmartKillSensor(VictorSmartKillEntity, SensorEntity):
     def __init__(
         self,
         trap_id: int,
-        coordinator: DataUpdateCoordinator[list[victor.Trap]],
+        coordinator: VictorSmartKillDataUpdateCoordinator,
         description: VictorSmartKillSensorEntityDescription,
     ) -> None:
         """Initialize VictorSmartKillSensor."""
         super().__init__(trap_id, coordinator)
-        self.entity_description = description
+        self.entity_description: VictorSmartKillSensorEntityDescription = description
 
     @property
     def _exclude_extra_state_attributes(self) -> list[str]:
@@ -255,13 +258,13 @@ class VictorSmartKillSensor(VictorSmartKillEntity, SensorEntity):
 
     @property
     def _name_suffix(self) -> str:
-        return self.entity_description.name
+        return str(self.entity_description.name)
 
     @property
     def _unique_id_suffix(self) -> str:
-        return f"{util.slugify(self.entity_description.name)}"
+        return f"{util.slugify(str(self.entity_description.name))}"
 
     @property
-    def native_value(self) -> StateType:
+    def native_value(self) -> StateType | datetime:
         """Return the value reported by the sensor."""
         return self.entity_description.value_func(self.trap)

@@ -17,11 +17,9 @@ from custom_components.victorsmartkill.const import (
 from custom_components.victorsmartkill.entity import VictorSmartKillEntity
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Iterable
-
     import victor_smart_kill as victor
     from homeassistant.core import HomeAssistant
-    from homeassistant.helpers.entity import Entity
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
     from custom_components.victorsmartkill import (
         IntegrationContext,
@@ -32,9 +30,9 @@ _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(
-    hass: HomeAssistant,
+    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
     entry: VictorSmartKillConfigEntry,
-    async_add_entities: Callable[[Iterable[Entity], bool | None], None],
+    async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up binary_sensor platform."""
     context: IntegrationContext = entry.runtime_data
@@ -50,7 +48,7 @@ async def async_setup_entry(
             trap.id,
         )
 
-    async_add_entities(entities, False)
+    async_add_entities(entities, update_before_add=False)
 
 
 class VictorSmartKillBinarySensor(VictorSmartKillEntity, BinarySensorEntity):

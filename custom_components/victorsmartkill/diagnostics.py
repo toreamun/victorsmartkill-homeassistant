@@ -34,10 +34,11 @@ TO_REDACT_CONFIG = {
 
 
 async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant, config_entry: VictorSmartKillConfigEntry
+    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
+    config_entry: VictorSmartKillConfigEntry,
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
-    diagnostics = {
+    diagnostics: dict[str, Any] = {
         "config_entry": async_redact_data(config_entry.as_dict(), TO_REDACT_CONFIG)
     }
 

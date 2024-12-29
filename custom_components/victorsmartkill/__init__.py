@@ -98,7 +98,7 @@ async def async_unload_entry(
 class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Trap]]):
     """Class to manage fetching data from the API."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         hass: HomeAssistant,
         logger: logging.Logger,
@@ -191,7 +191,6 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
                 "Received traps list %s from Victor Smart-Kill API.",
                 sorted(trap.id for trap in traps),
             )
-            return traps
         except victor.InvalidCredentialsError as ex:
             self.logger.debug("Invalid credentials: %s", repr(ex))
             raise ConfigEntryAuthFailed from ex
@@ -202,6 +201,8 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
                 exc_info=True,
             )
             raise
+        else:
+            return traps
 
 
 async def _async_initialize_coordinator(
@@ -223,7 +224,7 @@ async def _async_initialize_coordinator(
     update_interval = dt.timedelta(minutes=update_interval_minutes)
 
     coordinator = VictorSmartKillDataUpdateCoordinator(
-        hass, _LOGGER, update_interval, username, password, enabled_platforms
+        hass, _LOGGER, update_interval, str(username), str(password), enabled_platforms
     )
 
     # Initialize coordinator with trap data

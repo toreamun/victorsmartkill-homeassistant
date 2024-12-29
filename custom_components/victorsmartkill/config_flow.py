@@ -3,12 +3,12 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import homeassistant.helpers.config_validation as cv
 import victor_smart_kill as victor
-import voluptuous as vol  # type: ignore
-from homeassistant.config_entries import ConfigFlow, OptionsFlow
+import voluptuous as vol
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult, OptionsFlow
 from homeassistant.const import (
     CONF_PASSWORD,
     CONF_SCAN_INTERVAL,
@@ -16,6 +16,7 @@ from homeassistant.const import (
     Platform,
 )
 from homeassistant.core import callback
+from homeassistant.exceptions import HomeAssistantError
 
 from custom_components.victorsmartkill.const import (  # pylint: disable=unused-import
     DEFAULT_UPDATE_INTERVAL_MINUTES,
@@ -23,6 +24,8 @@ from custom_components.victorsmartkill.const import (  # pylint: disable=unused-
 )
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
+
     from homeassistant.data_entry_flow import FlowResult
 
     from custom_components.victorsmartkill import VictorSmartKillConfigEntry
@@ -30,12 +33,12 @@ if TYPE_CHECKING:
 _LOGGER = logging.getLogger(__name__)
 
 
-class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
+class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):
     """Config flow for Victor Smart-Kill."""
 
     VERSION = 1
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize."""
         self._errors = {}
 
@@ -73,7 +76,9 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
             errors=self._errors,
         )
 
-    async def async_step_reauth(self, user_input=None):
+    async def async_step_reauth(
+        self, user_input: Mapping[str, Any]
+    ) -> ConfigFlowResult:
         """Perform reauth upon an API authentication error."""
         user_input_copy = dict(user_input)
         if user_input and user_input[CONF_PASSWORD]:
@@ -83,36 +88,47 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
             config_entry = self.hass.config_entries.async_get_entry(
                 self.context["entry_id"]
             )
-            self.hass.config_entries.async_update_entry(
-                config_entry, data=user_input_copy
-            )
+            if config_entry is not None:
+                self.hass.config_entries.async_update_entry(
+                    config_entry, data=user_input_copy
+                )
 
         return await self.async_step_reauth_confirm(user_input_copy)
 
-    async def async_step_reauth_confirm(self, user_input=None):
+    async def async_step_reauth_confirm(
+        self, user_input: dict[str, Any] | None = None
+    ) -> ConfigFlowResult:
         """Dialog that informs the user that reauth is required."""
+        config_entry: VictorSmartKillConfigEntry | None
         if user_input is None:
-            config_entry = self.hass.config_entries.async_get_entry(
-                self.context["entry_id"]
-            )
-            user_input = dict(config_entry.data)
-        else:
-            if user_input.get(CONF_PASSWORD):
-                valid = await self._test_credentials(
-                    user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
+            if (
+                config_entry := self.hass.config_entries.async_get_entry(
+                    self.context["entry_id"]
                 )
-                if valid:
-                    config_entry = self.hass.config_entries.async_get_entry(
+            ) is None:
+                msg = "Unknown config entry"
+                raise HomeAssistantError(msg)
+            user_input = dict(config_entry.data)
+        elif user_input.get(CONF_PASSWORD):
+            valid = await self._test_credentials(
+                user_input[CONF_USERNAME], user_input[CONF_PASSWORD]
+            )
+            if valid:
+                if (
+                    config_entry := self.hass.config_entries.async_get_entry(
                         self.context["entry_id"]
                     )
-                    data = {
-                        **config_entry.data,
-                        CONF_USERNAME: user_input[CONF_USERNAME],
-                        CONF_PASSWORD: user_input[CONF_PASSWORD],
-                    }
-                    self.hass.config_entries.async_update_entry(config_entry, data=data)
-                    await self.hass.config_entries.async_reload(config_entry.entry_id)
-                    return self.async_abort(reason="reauth_successful")
+                ) is None:
+                    msg = "Unknown config entry"
+                    raise HomeAssistantError(msg)
+                data = {
+                    **config_entry.data,
+                    CONF_USERNAME: user_input[CONF_USERNAME],
+                    CONF_PASSWORD: user_input[CONF_PASSWORD],
+                }
+                self.hass.config_entries.async_update_entry(config_entry, data=data)
+                await self.hass.config_entries.async_reload(config_entry.entry_id)
+                return self.async_abort(reason="reauth_successful")
 
         return self.async_show_form(
             step_id="reauth_confirm",
@@ -131,7 +147,7 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
         """Get the options flow for this handler."""
         return VictorSmartKillOptionsFlowHandler(config_entry)
 
-    async def _test_credentials(self, username, password):
+    async def _test_credentials(self, username: str, password: str) -> bool:
         """Return true if credentials is valid."""
         try:
             async with victor.VictorAsyncClient(username, password) as client:
@@ -153,19 +169,21 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):  # type: ignore
 class VictorSmartKillOptionsFlowHandler(OptionsFlow):
     """Victor Smart-Kill config flow options handler."""
 
-    def __init__(self, config_entry: VictorSmartKillConfigEntry):
+    def __init__(self, config_entry: VictorSmartKillConfigEntry) -> None:
         """Initialize HACS options flow."""
         self.config_entry = config_entry
         self.options = dict(config_entry.options)
 
     async def async_step_init(
         self,
-        user_input=None,  # pylint: disable=unused-argument
+        user_input: dict[str, Any] | None = None,  # noqa: ARG002 Unused function argument: `user_input`
     ) -> FlowResult:
         """Manage the options."""
         return await self.async_step_user()
 
-    async def async_step_user(self, user_input=None) -> FlowResult:
+    async def async_step_user(
+        self, user_input: dict[str, Any] | None = None
+    ) -> FlowResult:
         """Handle a flow initialized by the user."""
         if user_input is not None:
             self.options.update(user_input)
