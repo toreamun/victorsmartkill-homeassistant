@@ -1,4 +1,5 @@
 """Constants for victorsmartkill."""
+
 from __future__ import annotations
 
 # Base component constants
