@@ -46,12 +46,6 @@ class IntegrationContext:
     unsubscribe_list: list[CALLBACK_TYPE] = dc.field(default_factory=list)
 
 
-async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Set up this integration using YAML is not supported."""
-    # pylint: disable=unused-argument
-    return True
-
-
 async def async_setup_entry(
     hass: HomeAssistant, entry: VictorSmartKillConfigEntry
 ) -> bool:
