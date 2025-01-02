@@ -29,7 +29,6 @@ from custom_components.victorsmartkill.const import (
 if TYPE_CHECKING:
     from collections.abc import Callable
 
-    from homeassistant.helpers.typing import ConfigType
 
 _LOGGER = logging.getLogger(__name__)
 
