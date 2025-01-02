@@ -3,16 +3,17 @@
 from __future__ import annotations
 
 import dataclasses as dc
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from homeassistant.components.diagnostics import async_redact_data
-from homeassistant.core import HomeAssistant
 
-from custom_components.victorsmartkill import (
-    IntegrationContext,
-    VictorSmartKillConfigEntry,
-)
-from custom_components.victorsmartkill.const import DOMAIN
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+
+    from custom_components.victorsmartkill import (
+        IntegrationContext,
+        VictorSmartKillConfigEntry,
+    )
 
 TO_REDACT_DATA = {
     "lorawan_app_key",
@@ -33,10 +34,11 @@ TO_REDACT_CONFIG = {
 
 
 async def async_get_config_entry_diagnostics(
-    hass: HomeAssistant, config_entry: VictorSmartKillConfigEntry
+    hass: HomeAssistant,  # noqa: ARG001 Unused function argument: `hass`
+    config_entry: VictorSmartKillConfigEntry,
 ) -> dict[str, Any]:
     """Return diagnostics for a config entry."""
-    diagnostics = {
+    diagnostics: dict[str, Any] = {
         "config_entry": async_redact_data(config_entry.as_dict(), TO_REDACT_CONFIG)
     }
 

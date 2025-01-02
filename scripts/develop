@@ -17,4 +17,10 @@ fi
 export PYTHONPATH="${PYTHONPATH}:${PWD}/custom_components"
 
 # Start Home Assistant
-hass --config "${PWD}/config" --debug
+#
+# See https://github.com/home-assistant/core/issues/110623#issuecomment-2266933072
+# Also see https://docs.python.org/3/using/cmdline.html#envvar-PYTHON_FROZEN_MODULES for alternate fix when HA moves to Python 13, using env in launch.json
+# Do not set debugpy in configuration.yaml if adding debugpy in command line here...
+
+# To start and wait for remote debugger
+python3 -Xfrozen_modules=off -m debugpy --listen localhost:5678 -m homeassistant --config ${PWD}/config

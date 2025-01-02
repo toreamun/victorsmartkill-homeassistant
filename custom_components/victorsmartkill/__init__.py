@@ -5,9 +5,9 @@ from __future__ import annotations
 import dataclasses as dc
 import datetime as dt
 import logging
-from math import e
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any
 
+import victor_smart_kill as victor
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     CONF_PASSWORD,
@@ -15,11 +15,9 @@ from homeassistant.const import (
     CONF_USERNAME,
     Platform,
 )
-from homeassistant.core import CALLBACK_TYPE, callback, Event, HomeAssistant
-from homeassistant.helpers.typing import ConfigType
+from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-import victor_smart_kill as victor
 
 from custom_components.victorsmartkill.const import (
     DEFAULT_UPDATE_INTERVAL_MINUTES,
@@ -27,6 +25,10 @@ from custom_components.victorsmartkill.const import (
     EVENT_TRAP_LIST_CHANGED,
     STARTUP_MESSAGE,
 )
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -39,14 +41,8 @@ type VictorSmartKillConfigEntry = ConfigEntry[IntegrationContext]
 class IntegrationContext:
     """Integration context needed by platforms and/or unload."""
 
-    coordinator: DataUpdateCoordinator
+    coordinator: VictorSmartKillDataUpdateCoordinator
     unsubscribe_list: list[CALLBACK_TYPE] = dc.field(default_factory=list)
-
-
-async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Set up this integration using YAML is not supported."""
-    # pylint: disable=unused-argument
-    return True
 
 
 async def async_setup_entry(
@@ -60,7 +56,8 @@ async def async_setup_entry(
         _LOGGER.info(STARTUP_MESSAGE)
 
     if not entry.data[CONF_PASSWORD]:
-        raise ConfigEntryAuthFailed("Please re-authenticate")
+        msg = "Please re-authenticate"
+        raise ConfigEntryAuthFailed(msg)
 
     coordinator = await _async_initialize_coordinator(hass, entry)
     entry.runtime_data = IntegrationContext(coordinator=coordinator)
@@ -72,7 +69,9 @@ async def async_setup_entry(
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: VictorSmartKillConfigEntry):
+async def async_unload_entry(
+    hass: HomeAssistant, entry: VictorSmartKillConfigEntry
+) -> bool:
     """Handle removal of an entry."""
     _LOGGER.debug("async_unload_entry %s.", entry.title)
 
@@ -92,17 +91,17 @@ async def async_unload_entry(hass: HomeAssistant, entry: VictorSmartKillConfigEn
 class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Trap]]):
     """Class to manage fetching data from the API."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         hass: HomeAssistant,
         logger: logging.Logger,
         update_interval: dt.timedelta,
         username: str,
         password: str,
-        platforms: list[str],
+        platforms: list[Platform],
     ) -> None:
         """Initialize."""
-        self.platforms: list[str] = platforms
+        self.platforms: list[Platform] = platforms
         self._client = victor.VictorAsyncClient(username, password)
         self._api = victor.VictorApi(self._client)
         self._close = False
@@ -147,11 +146,12 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
                             "current_traps": current_trap_ids,
                         },
                     )
-            return traps
         except ConfigEntryAuthFailed:
             raise
         except Exception as exception:
             raise UpdateFailed(exception) from exception
+        else:
+            return traps
 
     @callback
     def async_add_listener(
@@ -184,7 +184,6 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
                 "Received traps list %s from Victor Smart-Kill API.",
                 sorted(trap.id for trap in traps),
             )
-            return traps
         except victor.InvalidCredentialsError as ex:
             self.logger.debug("Invalid credentials: %s", repr(ex))
             raise ConfigEntryAuthFailed from ex
@@ -195,6 +194,8 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
                 exc_info=True,
             )
             raise
+        else:
+            return traps
 
 
 async def _async_initialize_coordinator(
@@ -216,7 +217,7 @@ async def _async_initialize_coordinator(
     update_interval = dt.timedelta(minutes=update_interval_minutes)
 
     coordinator = VictorSmartKillDataUpdateCoordinator(
-        hass, _LOGGER, update_interval, username, password, enabled_platforms
+        hass, _LOGGER, update_interval, str(username), str(password), enabled_platforms
     )
 
     # Initialize coordinator with trap data
