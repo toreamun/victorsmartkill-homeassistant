@@ -19,6 +19,7 @@ from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.util.ssl import client_context
 
 from custom_components.victorsmartkill.const import (
     DEFAULT_UPDATE_INTERVAL_MINUTES,
@@ -105,7 +106,9 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
     ) -> None:
         """Initialize."""
         self.platforms: list[Platform] = platforms
-        self._client = victor.VictorAsyncClient(username, password)
+        self._client = victor.VictorAsyncClient(
+            username, password, verify=client_context()
+        )
         self._api = victor.VictorApi(self._client)
         self._close = False
 
