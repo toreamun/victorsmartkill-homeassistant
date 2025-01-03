@@ -6,7 +6,11 @@ import dataclasses as dc
 import datetime as dt
 import logging
 from typing import TYPE_CHECKING, Any
-
+from homeassistant.util.ssl import (
+    SSLCipherList,
+    client_context,
+    create_no_verify_ssl_context,
+)
 import victor_smart_kill as victor
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -105,7 +109,9 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
     ) -> None:
         """Initialize."""
         self.platforms: list[Platform] = platforms
-        self._client = victor.VictorAsyncClient(username, password)
+        self._client = victor.VictorAsyncClient(
+            username, password, verify=client_context()
+        )
         self._api = victor.VictorApi(self._client)
         self._close = False
 
