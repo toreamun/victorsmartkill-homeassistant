@@ -86,6 +86,7 @@ class VictorSmartKillEntity(
             manufacturer=MANUFACTURER,
             sw_version=self.trap.trapstatistics.firmware_version,
             hw_version=self.trap.trapstatistics.board_type,
+            serial_number=self.trap.serial_number,
         )
 
     @property
