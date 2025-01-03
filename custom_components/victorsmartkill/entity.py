@@ -80,7 +80,7 @@ class VictorSmartKillEntity(
         """Return device specific attributes."""
         # See: https://developers.home-assistant.io/docs/device_registry_index/#device-properties
         return DeviceInfo(
-            identifiers={(DOMAIN, self.trap.id, self.trap.serial_number)},
+            identifiers={(DOMAIN, f"IDSN:{self.trap.id}:{self.trap.serial_number}")},
             name=self.trap.name,
             model=self.trap.trap_type_verbose,
             manufacturer=MANUFACTURER,
