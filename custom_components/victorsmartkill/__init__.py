@@ -6,11 +6,7 @@ import dataclasses as dc
 import datetime as dt
 import logging
 from typing import TYPE_CHECKING, Any
-from homeassistant.util.ssl import (
-    SSLCipherList,
-    client_context,
-    create_no_verify_ssl_context,
-)
+
 import victor_smart_kill as victor
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -23,6 +19,7 @@ from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.util.ssl import client_context
 
 from custom_components.victorsmartkill.const import (
     DEFAULT_UPDATE_INTERVAL_MINUTES,
