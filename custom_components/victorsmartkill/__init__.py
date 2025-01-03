@@ -17,6 +17,7 @@ from homeassistant.const import (
 )
 from homeassistant.core import CALLBACK_TYPE, Event, HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from custom_components.victorsmartkill.const import (
@@ -50,6 +51,8 @@ async def async_setup_entry(
 ) -> bool:
     """Set up this integration using UI."""
     _LOGGER.debug("async_setup_entry %s.", entry.title)
+
+    _migrate_device_identifiers(hass, entry)
 
     if hass.data.get(DOMAIN) is None:
         hass.data.setdefault(DOMAIN, {})
@@ -251,3 +254,54 @@ def _setup_reload(hass: HomeAssistant, entry: VictorSmartKillConfigEntry) -> Non
 
     # Listen for trap list changes and reload when changed (new traps etc.)
     hass.bus.async_listen_once(EVENT_TRAP_LIST_CHANGED, async_trap_list_changed)
+
+
+def _migrate_device_identifiers(
+    hass: HomeAssistant, config_entry: VictorSmartKillConfigEntry
+) -> None:
+    dev_reg = dr.async_get(hass)
+    devices = dr.async_entries_for_config_entry(dev_reg, config_entry.entry_id)
+    for device in devices:
+        # Identifiers should be in format (str, str)
+        # Find identifiers with incorrect format (str, int, str)
+        invalid_identifiers = [
+            identifier
+            for identifier in device.identifiers
+            if isinstance(identifier, tuple)
+            and len(identifier) == 3  # noqa: PLR2004 Search for three items in tuple
+            and identifier[0] == DOMAIN
+            and isinstance(identifier[1], int)
+            and isinstance(identifier[2], str)
+        ]
+
+        if invalid_identifiers:
+            # Generate corrected identifiers while avoiding duplicates
+            new_identifiers = set()
+            for identifier in invalid_identifiers:
+                # Format: IDSN:<trap_id>:<serial_number>
+                new_id = (DOMAIN, f"IDSN:{identifier[1]}:{identifier[2]}")
+                if new_id not in device.identifiers:
+                    new_identifiers.add(new_id)
+                else:
+                    _LOGGER.warning(
+                        "Skipping identifier %s for device %s due to duplicate",
+                        new_id,
+                        device.name or device.id,
+                    )
+
+            # Combine corrected and existing identifiers
+            updated_identifiers = (
+                device.identifiers - set(invalid_identifiers)
+            ) | new_identifiers
+
+            # Check if any changes were made before updating
+            if updated_identifiers != device.identifiers:
+                dev_reg.async_update_device(
+                    device.id,
+                    new_identifiers=updated_identifiers,
+                )
+                _LOGGER.info(
+                    "Migrated identifiers for device %s. Updated identifiers: %s",
+                    device.name or device.id,
+                    updated_identifiers,
+                )
