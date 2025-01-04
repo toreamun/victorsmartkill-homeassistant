@@ -5,7 +5,6 @@ Home Assistant integration for Victor Smart-Kill WI-FI electronic mouse and rat 
 <img src="https://play-lh.googleusercontent.com/tfSd-O7Qwc8p8kYzTbJlDlq-nZzUyRHCMEvM87155kTtwEpVP7iNMgNzg2gWujjZ0jmq=s360-rw" width="128" alt="Victor logo">
 
 [![GitHub Release][releases-shield]][releases]
-[![Language grade: Python][language-grade-shield]][lgtm-project]
 [![License][license-shield]](LICENSE)
 
 [![hacs][hacsbadge]][hacs]
@@ -28,7 +27,7 @@ The easiest way to add the integration to your Homeassistant installation is usi
 
 ### Script download (alternative 2)
 
-You need some kind of terminal to use this method. You can use one of the SSH add-ons from the [Add-on Store](https://my.home-assistant.io/redirect/_change/?redirect=supervisor_store%2) if you run HassOS. 
+You need some kind of terminal to use this method. You can use one of the SSH add-ons from the [Add-on Store](https://my.home-assistant.io/redirect/_change/?redirect=supervisor_store%2) if you run HassOS.
 
 1. Open terminal. Change directory to your Home Assistant configuration directory (where you find `configuration.yaml`) if you are not using HassOS.
 2. Run this script
@@ -47,7 +46,7 @@ You need some kind of terminal to use this method. You can use one of the SSH ad
 1. Open terminal and change to the directory for your HA configuration (where you find `configuration.yaml`).
 2. If you do not have a `custom_components` directory there, you need to create it.
 3. Change dircetory to `custom_components`.
-4. Download lastest version 
+4. Download lastest version
 
 ```
 wget https://github.com/toreamun/victorsmartkill-homeassistant/releases/latest/download/victorsmartkill.zip
@@ -56,7 +55,7 @@ wget https://github.com/toreamun/victorsmartkill-homeassistant/releases/latest/d
 5. Unzip victorsmartkill.zip into folder victorsmartkill
 
 ```
-unzip victorsmartkill.zip -d victorsmartkill       
+unzip victorsmartkill.zip -d victorsmartkill
 ```
 
 6. Delete victorsmartkill.zip
