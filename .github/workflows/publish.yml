@@ -17,18 +17,18 @@ jobs:
         uses: actions/checkout@v4
       - name: Upload zip to action
         uses: actions/upload-artifact@v4
-        if: '${{ github.event_name == "push" }}'
+        if: '${{ github.event_name == 'push' }}'
         with:
           name: victorsmartkill
           path: '${{ github.workspace }}/custom_components/victorsmartkill'
       - name: ZIP victorsmartkill directory
-        if: '${{ github.event_name == "release" }}'
+        if: '${{ github.event_name == 'release' }}'
         run: |
           cd ${{ github.workspace }}/custom_components/victorsmartkill
           zip victorsmartkill.zip -r ./
       - name: Upload zip to release
         uses: svenstaro/upload-release-action@v2
-        if: '${{ github.event_name == "release" }}'
+        if: '${{ github.event_name == 'release' }}'
         with:
           repo_token: '${{ secrets.GITHUB_TOKEN }}'
           file: '${{ github.workspace }}/custom_components/victorsmartkill/victorsmartkill.zip'
