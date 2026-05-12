@@ -145,7 +145,7 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(config_entry: VictorSmartKillConfigEntry) -> OptionsFlow:
         """Get the options flow for this handler."""
-        return VictorSmartKillOptionsFlowHandler(config_entry)
+        return VictorSmartKillOptionsFlowHandler()
 
     async def _test_credentials(self, username: str, password: str) -> bool:
         """Return true if credentials is valid."""
@@ -169,11 +169,6 @@ class VictorSmartKillFlowHandler(ConfigFlow, domain=DOMAIN):
 class VictorSmartKillOptionsFlowHandler(OptionsFlow):
     """Victor Smart-Kill config flow options handler."""
 
-    def __init__(self, config_entry: VictorSmartKillConfigEntry) -> None:
-        """Initialize HACS options flow."""
-        self.config_entry = config_entry
-        self.options = dict(config_entry.options)
-
     async def async_step_init(
         self,
         user_input: dict[str, Any] | None = None,  # noqa: ARG002 Unused function argument: `user_input`
@@ -186,20 +181,20 @@ class VictorSmartKillOptionsFlowHandler(OptionsFlow):
     ) -> FlowResult:
         """Handle a flow initialized by the user."""
         if user_input is not None:
-            self.options.update(user_input)
-            return await self._update_options()
+            return await self._update_options(user_input)
 
+        current_options = dict(self.config_entry.options)
         options = {
             vol.Required(
                 str(Platform.BINARY_SENSOR),
-                default=self.options.get(Platform.BINARY_SENSOR, True),
+                default=current_options.get(Platform.BINARY_SENSOR, True),
             ): bool,
             vol.Required(
-                str(Platform.SENSOR), default=self.options.get(Platform.SENSOR, True)
+                str(Platform.SENSOR), default=current_options.get(Platform.SENSOR, True)
             ): bool,
             vol.Optional(
                 CONF_SCAN_INTERVAL,
-                default=self.options.get(
+                default=current_options.get(
                     CONF_SCAN_INTERVAL, DEFAULT_UPDATE_INTERVAL_MINUTES
                 ),
             ): cv.positive_int,
@@ -210,8 +205,9 @@ class VictorSmartKillOptionsFlowHandler(OptionsFlow):
             data_schema=vol.Schema(options),
         )
 
-    async def _update_options(self) -> FlowResult:
+    async def _update_options(self, user_input: dict[str, Any]) -> FlowResult:
         """Update config entry options."""
         return self.async_create_entry(
-            title=self.config_entry.data.get(CONF_USERNAME), data=self.options
+            title=self.config_entry.data.get(CONF_USERNAME),
+            data={**self.config_entry.options, **user_input},
         )

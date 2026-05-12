@@ -155,7 +155,7 @@ class VictorSmartKillDataUpdateCoordinator(DataUpdateCoordinator[list[victor.Tra
         except ConfigEntryAuthFailed:
             raise
         except Exception as exception:
-            raise UpdateFailed(exception) from exception
+            raise UpdateFailed(repr(exception)) from exception
         else:
             return traps
 
